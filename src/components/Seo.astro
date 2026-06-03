@@ -1,0 +1,56 @@
+---
+/**
+ * Per-page SEO metadata: title, description, canonical, Open Graph, Twitter.
+ * Boring on purpose — one source of truth for head tags.
+ */
+import { SITE } from '../config';
+
+interface Props {
+  title: string;
+  description: string;
+  /** Override the document <title>. Defaults to `${title} — ${SITE.name}`. */
+  fullTitle?: string;
+  /** OG type. */
+  type?: 'website' | 'article';
+  /** Last-updated ISO date for articles. */
+  publishedTime?: string;
+  noindex?: boolean;
+}
+
+const {
+  title,
+  description,
+  fullTitle,
+  type = 'website',
+  publishedTime,
+  noindex = false,
+} = Astro.props;
+
+const documentTitle = fullTitle ?? `${title} — ${SITE.name}`;
+
+// Astro.site must be set in astro.config.mjs for these to resolve absolutely.
+const canonical = new URL(Astro.url.pathname, Astro.site).href.replace(
+  /([^:])\/{2,}/g,
+  '$1/',
+);
+---
+
+<title>{documentTitle}</title>
+<meta name="description" content={description} />
+<link rel="canonical" href={canonical} />
+{noindex && <meta name="robots" content="noindex, nofollow" />}
+
+<!-- Open Graph -->
+<meta property="og:type" content={type} />
+<meta property="og:site_name" content={SITE.name} />
+<meta property="og:title" content={title} />
+<meta property="og:description" content={description} />
+<meta property="og:url" content={canonical} />
+{type === 'article' && publishedTime && (
+  <meta property="article:modified_time" content={publishedTime} />
+)}
+
+<!-- Twitter -->
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:title" content={title} />
+<meta name="twitter:description" content={description} />

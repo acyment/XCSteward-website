@@ -1,0 +1,20 @@
+---
+/** A good-fit or not-a-fit list. `tone` picks the check/cross styling. */
+interface Props {
+  title: string;
+  items: string[];
+  tone: 'good' | 'bad';
+}
+const { title, items, tone } = Astro.props;
+const icon = tone === 'good' ? '✓' : '✕';
+---
+
+<div class={`fit-list fit-list--${tone}`}>
+  <h3 class="fit-list__title">
+    <span aria-hidden="true">{icon}</span>
+    {title}
+  </h3>
+  <ul>
+    {items.map((item) => <li>{item}</li>)}
+  </ul>
+</div>

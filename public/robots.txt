@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://xcsteward.dev/sitemap-index.xml

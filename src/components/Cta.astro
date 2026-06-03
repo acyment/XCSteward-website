@@ -1,0 +1,53 @@
+---
+/**
+ * Standard call-to-action panel. Used at the bottom of failure pages and on
+ * the landing page. Honest, low-hype asks: try the alpha, open an issue,
+ * compare notes. Heading text and intro are configurable.
+ */
+import Button from './Button.astro';
+import { SITE } from '../config';
+
+interface Props {
+  heading?: string;
+  intro?: string;
+  /** Pre-fill an issue title to lower the activation energy. */
+  issueTitle?: string;
+}
+const {
+  heading = 'Try the alpha, or tell us where it breaks',
+  intro,
+  issueTitle,
+} = Astro.props;
+
+const issueUrl = issueTitle
+  ? `${SITE.issues}?title=${encodeURIComponent(issueTitle)}`
+  : SITE.issues;
+---
+
+<aside class="cta-panel" aria-labelledby="cta-heading">
+  <h2 id="cta-heading">{heading}</h2>
+  {intro && <p>{intro}</p>}
+  <ul class="cta-list">
+    <li>
+      <strong>Try the OSS alpha</strong> — only worth it if you have a real,
+      reproducible failure mode to point it at.
+    </li>
+    <li>
+      <strong>Open an issue with your failure mode</strong> — share logs,
+      <code>xcodebuild</code> invocation, Xcode/Simulator versions, and how
+      concurrent your setup is.
+    </li>
+    <li>
+      <strong>Compare notes</strong> — if you have seen this class of failure,
+      we want to hear how it shows up for you.
+    </li>
+  </ul>
+  <div class="btn-row">
+    <Button href={SITE.repo} variant="primary" external>
+      View XCSteward on GitHub
+    </Button>
+    <Button href={issueUrl} variant="secondary" external>
+      Open an issue
+    </Button>
+  </div>
+</aside>

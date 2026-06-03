@@ -1,0 +1,66 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import FailureCard from '../../components/FailureCard.astro';
+import Callout from '../../components/Callout.astro';
+import Cta from '../../components/Cta.astro';
+
+const entries = (await getCollection('failures', ({ data }) => !data.draft)).sort(
+  (a, b) => a.data.order - b.data.order,
+);
+
+const title = 'XCSteward failure-mode library';
+const description =
+  'A hand-written library of local Xcode, xcodebuild, simctl, and iOS Simulator test-execution failures — with quick checks, manual mitigations, and where XCSteward may help.';
+---
+
+<BaseLayout title={title} description={description} fullTitle={`${title}`}>
+  <section class="container prose" style="margin-top: 2.5rem;">
+    <p class="breadcrumb"><a href="/">Home</a> / Failure modes</p>
+    <h1>Failure-mode library</h1>
+    <p class="lede">
+      Symptom-first writeups of the operational failures that show up around
+      local XCTest, <code>xcodebuild</code>, <code>simctl</code>, and the iOS
+      Simulator. Each page is meant to be useful on its own — quick checks and
+      manual mitigations first, and an honest note on where XCSteward may or may
+      not help.
+    </p>
+
+    <Callout title="What this list is — and is not">
+      <p>
+        This is a small, curated set of failures we have actually hit, not
+        mass-generated content. It focuses on <strong>operational fragility</strong>
+        in test execution — readiness, destinations, lifecycle, cleanup,
+        timeouts, and concurrency — <em>not</em> broken tests, code signing, or
+        missing runtimes.
+      </p>
+    </Callout>
+  </section>
+
+  <section class="container">
+    <ul
+      class="grid grid--2"
+      style="list-style: none; padding: 0; margin: 0;"
+      role="list"
+    >
+      {
+        entries.map((entry) => (
+          <li>
+            <FailureCard
+              href={`/failures/${entry.id}/`}
+              title={entry.data.title}
+              symptom={entry.data.symptom}
+              failureClass={entry.data.failureClass}
+              fit={entry.data.fit}
+              fitNote={entry.data.fitNote}
+            />
+          </li>
+        ))
+      }
+    </ul>
+  </section>
+
+  <section class="container prose">
+    <Cta />
+  </section>
+</BaseLayout>

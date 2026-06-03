@@ -1,0 +1,18 @@
+---
+/** Note / warning callout box. Default is an informational note. */
+interface Props {
+  variant?: 'note' | 'warn';
+  title?: string;
+}
+const { variant = 'note', title } = Astro.props;
+const icon = variant === 'warn' ? '⚠' : 'ℹ';
+const defaultTitle = variant === 'warn' ? 'Heads up' : 'Note';
+---
+
+<aside class={`callout callout--${variant}`}>
+  <p class="callout__title">
+    <span class="callout__icon" aria-hidden="true">{icon}</span>
+    {title ?? defaultTitle}
+  </p>
+  <slot />
+</aside>

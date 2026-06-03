@@ -1,0 +1,21 @@
+{
+  "name": "xcsteward-website",
+  "type": "module",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Static marketing and failure-mode library site for XCSteward.",
+  "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "check": "astro check",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "@astrojs/check": "^0.9.4",
+    "@astrojs/sitemap": "^3.2.1",
+    "astro": "^5.1.1",
+    "typescript": "^5.7.2"
+  }
+}

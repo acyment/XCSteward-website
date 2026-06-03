@@ -1,0 +1,185 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Hero from '../components/Hero.astro';
+import Button from '../components/Button.astro';
+import FailureCard from '../components/FailureCard.astro';
+import FitList from '../components/FitList.astro';
+import Callout from '../components/Callout.astro';
+import Cta from '../components/Cta.astro';
+import { SITE } from '../config';
+
+const failures = (await getCollection('failures', ({ data }) => !data.draft)).sort(
+  (a, b) => a.data.order - b.data.order,
+);
+
+const goodFit = [
+  'Local simulator test runs that hang before tests start.',
+  'xcodebuild getting stuck resolving or booting destinations.',
+  'simctl or CoreSimulator getting wedged or deadlocked.',
+  'Cleanup and preboot scripts that have become part of the ritual.',
+  'Local, CI-like test workflows running on a Mac.',
+  'Multiple agents, scripts, or humans touching Xcode tooling at once.',
+];
+
+const notFit = [
+  'Broken tests that fail on their own logic.',
+  'App-level UI test flakiness and timing bugs in your test code.',
+  'Code signing and provisioning problems.',
+  'Missing or un-downloaded Xcode runtimes.',
+  'Bugs inside a specific simulator runtime / vendor image.',
+  'Network, backend, or mock-server instability.',
+];
+
+const helps = [
+  {
+    title: 'A controlled local execution lane',
+    body: 'Run tests through one predictable path instead of ad-hoc xcodebuild invocations scattered across scripts and agents.',
+  },
+  {
+    title: 'A scheduler / queue',
+    body: 'Submit runs from multiple agents and scripts; they execute in a coordinated order rather than colliding on shared state.',
+  },
+  {
+    title: 'Readiness checks',
+    body: 'Confirm the simulator subsystem and device are actually ready — not just "Booted" — before handing off to xcodebuild.',
+  },
+  {
+    title: 'Isolated artifacts',
+    body: 'Per-run DerivedData, result bundles, and logs, so concurrent runs do not overwrite each other.',
+  },
+  {
+    title: 'Timeouts and cleanup',
+    body: 'Bound each phase so a wedge becomes a fast, legible failure, and tear down devices and processes deterministically afterward.',
+  },
+  {
+    title: 'Guardrails around concurrency',
+    body: 'Prevent unsafe simultaneous Xcode/Simulator activity from deadlocking CoreSimulator in the first place.',
+  },
+];
+
+const title = 'XCSteward';
+const fullTitle =
+  'XCSteward — predictable local XCTest & iOS Simulator test execution';
+const description = SITE.description;
+---
+
+<BaseLayout title={title} fullTitle={fullTitle} description={description}>
+  <!-- 1. HERO -->
+  <Hero
+    eyebrow="Open source · local-first · macOS"
+    title="Make local iOS test runs stop hanging."
+    subtitle="XCSteward is an OSS macOS tool for predictable XCTest, xcodebuild, and iOS Simulator execution — especially when coding agents, scripts, and humans share one Mac."
+  >
+    <div class="btn-row">
+      <Button href={SITE.repo} variant="primary" external>
+        View on GitHub
+      </Button>
+      <Button href="/failures/" variant="secondary">
+        Browse failure modes
+      </Button>
+    </div>
+  </Hero>
+
+  <!-- 2. WHY THIS EXISTS -->
+  <section class="container prose" aria-labelledby="why-heading">
+    <h2 id="why-heading">Why this exists</h2>
+    <p>
+      The pain did not start with CI. It got much worse the day coding agents
+      started running iOS tests for me — across <strong>more than one app at the
+      same time</strong>, on the same Mac.
+    </p>
+    <p>
+      A single <code>xcodebuild</code> or Simulator run is already fragile. But
+      once several agents, terminals, scripts, CI-like jobs, and a human can all
+      touch Xcode tooling on one machine, the whole thing becomes hard to reason
+      about. Runs hang before tests start. <code>simctl</code> stops responding.
+      CoreSimulator wedges. Failures stop being reproducible.
+    </p>
+    <Callout title="Concurrency amplifies, it does not solely cause">
+      <p>
+        Most of these failures can happen in a single run. Sharing one Mac
+        between multiple agents and scripts does not invent new problems so much
+        as it makes the existing fragility <em>frequent</em> and <em>hard to
+        debug</em>. XCSteward is honest about that distinction.
+      </p>
+    </Callout>
+  </section>
+
+  <!-- 3 & 4. GOOD FIT / NOT A FIT -->
+  <section class="container" aria-labelledby="fit-heading">
+    <div class="prose">
+      <h2 id="fit-heading">Is this for you?</h2>
+      <p class="lede">
+        XCSteward is narrow on purpose. It targets operational fragility around
+        local test execution — not your test code.
+      </p>
+    </div>
+    <div class="fit-columns">
+      <FitList tone="good" title="A good fit when" items={goodFit} />
+      <FitList tone="bad" title="Not a fit for" items={notFit} />
+    </div>
+  </section>
+
+  <!-- 5. HOW IT HELPS -->
+  <section class="container prose" aria-labelledby="helps-heading">
+    <h2 id="helps-heading">How XCSteward helps</h2>
+    <p>
+      It does not rewrite your tests or replace <code>xcodebuild</code>. It
+      governs <em>how</em> runs are executed, isolated, and cleaned up so the
+      simulator subsystem stays in a state you can reason about.
+    </p>
+    <ul class="feature-list">
+      {
+        helps.map((f) => (
+          <li>
+            <strong>{f.title}.</strong> {f.body}
+          </li>
+        ))
+      }
+    </ul>
+  </section>
+
+  <!-- 6. FAILURE-MODE LIBRARY -->
+  <section class="container" aria-labelledby="library-heading">
+    <div class="prose">
+      <h2 id="library-heading">Failure-mode library</h2>
+      <p>
+        Symptom-first writeups of the failures XCSteward is built around. Each
+        page has quick checks, manual mitigations, and an honest note on fit —
+        useful even if you never install anything.
+      </p>
+    </div>
+    <ul
+      class="grid grid--3"
+      style="list-style: none; padding: 0; margin: 1.25rem 0 0;"
+      role="list"
+    >
+      {
+        failures.map((entry) => (
+          <li>
+            <FailureCard
+              href={`/failures/${entry.id}/`}
+              title={entry.data.title}
+              symptom={entry.data.symptom}
+              failureClass={entry.data.failureClass}
+              fit={entry.data.fit}
+              fitNote={entry.data.fitNote}
+            />
+          </li>
+        ))
+      }
+    </ul>
+    <p style="margin-top: 1.25rem;">
+      <a href="/failures/">See the full failure-mode library →</a>
+    </p>
+  </section>
+
+  <!-- 7. ALPHA / BETA ASK -->
+  <section class="container prose" aria-labelledby="alpha-heading">
+    <Cta
+      heading="Trying the alpha"
+      intro="XCSteward is an early, open-source alpha. It is only worth your time if you actually hit these failure modes — please come with real, reproducible pain rather than curiosity. No hype, no waitlist."
+    />
+  </section>
+</BaseLayout>

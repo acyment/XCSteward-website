@@ -1,0 +1,24 @@
+---
+/** Card linking to a failure-mode page: symptom, failure class, fit level. */
+import FitBadge from './FitBadge.astro';
+import type { FitLevel } from '../content.config';
+
+interface Props {
+  href: string;
+  title: string;
+  symptom: string;
+  failureClass: string;
+  fit: FitLevel;
+  fitNote: string;
+}
+const { href, title, symptom, failureClass, fit, fitNote } = Astro.props;
+---
+
+<article class="failure-card">
+  <h3 class="failure-card__title"><a href={href}>{title}</a></h3>
+  <p class="failure-card__symptom">{symptom}</p>
+  <div class="failure-card__meta">
+    <FitBadge fit={fit} label={fitNote} />
+    <span class="failure-card__class">Likely: {failureClass}</span>
+  </div>
+</article>

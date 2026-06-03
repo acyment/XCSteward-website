@@ -1,0 +1,75 @@
+---
+import { getCollection, render } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import FitBadge from '../../components/FitBadge.astro';
+import Cta from '../../components/Cta.astro';
+
+export async function getStaticPaths() {
+  const entries = await getCollection('failures', ({ data }) => !data.draft);
+  return entries.map((entry) => ({
+    params: { slug: entry.id },
+    props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+const { data } = entry;
+const { Content } = await render(entry);
+
+// Resolve related entries (skip any dangling slugs, keep declared order).
+const all = await getCollection('failures', ({ data }) => !data.draft);
+const related = data.related
+  .map((slug) => all.find((e) => e.id === slug))
+  .filter((e): e is (typeof all)[number] => Boolean(e));
+
+const updated = data.updated.toISOString().slice(0, 10);
+---
+
+<BaseLayout
+  title={data.title}
+  description={data.description}
+  type="article"
+  publishedTime={data.updated.toISOString()}
+>
+  <article class="container prose failure-header">
+    <p class="breadcrumb">
+      <a href="/failures/">Failure modes</a> / {data.title}
+    </p>
+    <h1>{data.title}</h1>
+    <p class="lede">{data.symptom}</p>
+    <div class="failure-meta">
+      <FitBadge fit={data.fit} label={data.fitNote} />
+      <span>Likely class: {data.failureClass}</span>
+      <span>·</span>
+      <span>Updated <time datetime={updated}>{updated}</time></span>
+    </div>
+  </article>
+
+  <div class="container prose failure-body">
+    <Content />
+
+    {
+      related.length > 0 && (
+        <section aria-labelledby="related-heading">
+          <h2 id="related-heading">Related failure modes</h2>
+          <ul class="related-list">
+            {related.map((e) => (
+              <li>
+                <a href={`/failures/${e.id}/`}>{e.data.title}</a>
+                <span class="failure-card__class"> — {e.data.symptom}</span>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )
+    }
+
+    <section>
+      <Cta
+        heading="Try the alpha, or open an issue with this failure mode"
+        issueTitle={`[failure mode] ${data.title}`}
+        intro="XCSteward is an early OSS alpha. It is most useful if you can point it at a real, reproducible version of this failure."
+      />
+    </section>
+  </div>
+</BaseLayout>

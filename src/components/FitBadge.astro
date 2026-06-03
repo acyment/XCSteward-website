@@ -1,0 +1,18 @@
+---
+/** Small pill that signals how well a failure mode fits XCSteward's scope. */
+import type { FitLevel } from '../content.config';
+
+interface Props {
+  fit: FitLevel;
+  label?: string;
+}
+const { fit, label } = Astro.props;
+
+const defaults: Record<FitLevel, string> = {
+  strong: 'Strong fit',
+  partial: 'Partial fit',
+  'out-of-scope': 'Often out of scope',
+};
+---
+
+<span class={`badge badge--${fit}`}>{label ?? defaults[fit]}</span>
