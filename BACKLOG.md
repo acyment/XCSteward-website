@@ -7,8 +7,8 @@ Deferred work and deliberate non-goals. Kept short and honest.
 See [`LAUNCH_CHECKLIST.md`](./LAUNCH_CHECKLIST.md) for the full ordered list. Key
 items:
 
-- [ ] **Set `SITE_URL`** to the real production domain in the host's build env.
-      Until then builds use the documented placeholder `https://xcsteward.dev`.
+- [x] **Production domain** decided: `xcsteward.com` (built-in `SITE_URL`
+      default; overridable). Hosted on the Hetzner VPS via `cyment-infra`.
 - [ ] **Install the issue-form templates** in the tool repo
       (`acyment/XCSteward`) from [`proposals/issue-templates/`](./proposals/issue-templates/).
       Reporting already works without them (pre-filled issue body); the templates

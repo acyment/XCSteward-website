@@ -6,7 +6,7 @@ import type { APIRoute } from 'astro';
  */
 export const GET: APIRoute = ({ site }) => {
   // `site` is set in astro.config.mjs; fall back defensively just in case.
-  const base = site ?? new URL('https://xcsteward.dev');
+  const base = site ?? new URL('https://xcsteward.com');
   const sitemapUrl = new URL('sitemap-index.xml', base).href;
 
   const body = `User-agent: *

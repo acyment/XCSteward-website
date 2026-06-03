@@ -50,12 +50,11 @@ One value drives canonical URLs, Open Graph tags, the sitemap, **and**
 
 - It is read from the `SITE_URL` environment variable in
   [`astro.config.mjs`](./astro.config.mjs).
-- If `SITE_URL` is unset it falls back to the documented placeholder
-  `https://xcsteward.dev`. **Set `SITE_URL` for any real deploy** — do not rely
-  on the placeholder.
+- If `SITE_URL` is unset it falls back to the production domain
+  `https://xcsteward.com`. Override it for previews or a different host.
 
 ```sh
-SITE_URL=https://your-domain.example pnpm build
+SITE_URL=https://staging.example pnpm build
 ```
 
 `robots.txt` is generated from this value by
@@ -259,15 +258,25 @@ SITE_URL=https://your-domain.example pnpm build    # production build
 pnpm preview                                       # serve ./dist on :4321
 ```
 
-> **Before launch:** replace `your-domain.example` with the real domain
-> everywhere you set `SITE_URL`. There is no other place to change it — the
-> default `https://xcsteward.dev` is only a placeholder fallback.
+The production domain is **`xcsteward.com`** (the built-in `SITE_URL` default).
+
+### Hosting (Hetzner VPS via cyment-infra)
+
+Production is served from the shared Hetzner VPS managed by the
+[`cyment-infra`](../cyment-infra) repo: a multi-stage `Dockerfile` (in this repo)
+builds the static site and serves it with an internal Caddy `file_server`; the
+front Caddy reverse-proxies `xcsteward.com` to that container. Deploys happen by
+pushing `cyment-infra` (CI SSHes to the VPS, `git pull`s the sibling repos —
+including this one at `../XCSteward-website` — and runs `docker compose up -d
+--build`). `SITE_URL` and analytics are passed as Docker **build args**, so a
+config change means a rebuild on the VPS. Step-by-step go-live is in
+[`LAUNCH_CHECKLIST.md`](./LAUNCH_CHECKLIST.md).
 
 ### Published URLs
 
-- Sitemap index: `https://your-domain.example/sitemap-index.xml`
+- Sitemap index: `https://xcsteward.com/sitemap-index.xml`
   — submit this to **Google Search Console** / Bing Webmaster after deploy.
-- robots.txt: `https://your-domain.example/robots.txt`
+- robots.txt: `https://xcsteward.com/robots.txt`
   (its `Sitemap:` line points back at the sitemap index above)
 
 ### Live smoke test (after deploy)
@@ -279,7 +288,7 @@ On the deployed site, confirm:
 - [ ] `/failures/` loads.
 - [ ] One failure page loads (e.g. `/failures/coresimulatorservice-deadlock/`).
 - [ ] `view-source` on `/`: `<link rel="canonical">` uses the **real** domain
-      (not `xcsteward.dev`).
+      (`https://xcsteward.com`).
 - [ ] `view-source` on `/`: `og:image` uses the **real** domain.
 - [ ] `/sitemap-index.xml` loads.
 - [ ] `/robots.txt` loads and its `Sitemap:` line points at the real sitemap.
