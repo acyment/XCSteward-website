@@ -10,11 +10,14 @@ queries:
   - 'simulator boots but app does not launch'
   - 'xcodebuild test stuck after simulator boot'
   - 'simulator booted tests not running'
+category: readiness
 related:
+  - 'unable-to-boot-the-simulator'
+  - 'xcodebuild-timed-out-waiting-for-simulator'
   - 'xcodebuild-hangs-resolving-simulator-destination'
-  - 'coresimulatorservice-deadlock'
   - 'fastlane-scan-hangs-after-tests'
-order: 50
+order: 18
+featured: true
 updated: 2026-06-03
 ---
 

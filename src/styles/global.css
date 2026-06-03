@@ -1001,3 +1001,52 @@ pre .token-comment {
   font-size: 0.9rem;
   color: var(--text-faint);
 }
+
+/* ---- Failure-library category jump nav ---- */
+
+.cat-jump {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 1.5rem;
+}
+
+.cat-jump a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  background: var(--bg-elev);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 0.3rem 0.7rem;
+}
+
+.cat-jump a:hover {
+  color: var(--primary-strong);
+  border-color: var(--primary);
+  background: var(--primary-soft);
+  text-decoration: none;
+}
+
+.cat-jump__count {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--text-faint);
+  background: var(--bg-subtle);
+  border-radius: 999px;
+  padding: 0.02rem 0.4rem;
+}
+
+/* Offset anchored category sections below the sticky header. */
+.container[id] {
+  scroll-margin-top: 4.5rem;
+}
+
+.failures-count {
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  color: var(--text-faint);
+  margin-bottom: 1rem;
+}

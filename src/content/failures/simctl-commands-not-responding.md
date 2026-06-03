@@ -10,11 +10,14 @@ queries:
   - 'xcrun simctl list hangs'
   - 'simctl boot hangs forever'
   - 'simctl not responding macos'
+category: lifecycle
 related:
   - 'coresimulatorservice-deadlock'
+  - 'killing-simulator-does-not-fix-xcodebuild'
+  - 'unable-to-connect-to-simulator'
   - 'xcodebuild-hangs-resolving-simulator-destination'
-  - 'simulator-booted-tests-never-start'
-order: 20
+order: 30
+featured: true
 updated: 2026-06-03
 ---
 

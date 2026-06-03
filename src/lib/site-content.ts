@@ -3,6 +3,50 @@
  * Kept here so the lists do not drift between pages.
  */
 
+import type { Category } from '../content.config';
+
+/** Display order, label, and one-line blurb for each failure-class category. */
+export const CATEGORY_META: Record<
+  Category,
+  { order: number; label: string; blurb: string }
+> = {
+  readiness: {
+    order: 1,
+    label: 'Destination & simulator readiness',
+    blurb:
+      'Resolving a destination, booting a device, and getting it actually ready before tests start.',
+  },
+  lifecycle: {
+    order: 2,
+    label: 'CoreSimulator / simctl lifecycle',
+    blurb:
+      'The simctl client and CoreSimulatorService daemon becoming unresponsive, wedged, or deadlocked.',
+  },
+  state: {
+    order: 3,
+    label: 'Shared state & cleanup',
+    blurb:
+      'Stale device state, contaminated artifacts, and concurrent processes colliding over shared tooling.',
+  },
+  ci: {
+    order: 4,
+    label: 'CI-like workflow failures',
+    blurb:
+      'Symptoms specific to CI and CI-like runner environments on a Mac.',
+  },
+  agents: {
+    order: 5,
+    label: 'Coding-agent amplified failures',
+    blurb:
+      'Failures that surface or worsen when coding agents drive test runs on a shared Mac.',
+  },
+};
+
+/** Categories in display order. */
+export const CATEGORY_ORDER = (
+  Object.keys(CATEGORY_META) as Category[]
+).sort((a, b) => CATEGORY_META[a].order - CATEGORY_META[b].order);
+
 /** Symptoms XCSteward is built for. */
 export const GOOD_FIT: string[] = [
   'Local simulator test runs that hang before tests start.',

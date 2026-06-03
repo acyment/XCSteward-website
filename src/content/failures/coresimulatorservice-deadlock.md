@@ -10,11 +10,14 @@ queries:
   - 'CoreSimulatorService not responding'
   - 'simulator subsystem hung macos'
   - 'CoreSimulator service stuck'
+category: lifecycle
 related:
   - 'simctl-commands-not-responding'
-  - 'xcodebuild-hangs-resolving-simulator-destination'
+  - 'killing-simulator-does-not-fix-xcodebuild'
+  - 'multiple-xcodebuild-processes-same-mac'
   - 'coding-agents-ios-simulator-tests'
-order: 30
+order: 32
+featured: true
 updated: 2026-06-03
 ---
 

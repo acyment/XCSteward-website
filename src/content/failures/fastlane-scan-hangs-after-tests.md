@@ -10,11 +10,14 @@ queries:
   - 'fastlane scan never exits'
   - 'xcodebuild test hangs after tests pass'
   - 'scan stuck after test run complete'
+category: state
 related:
+  - 'fastlane-scan-parallel-testing-hang'
   - 'simulator-booted-tests-never-start'
   - 'coresimulatorservice-deadlock'
-  - 'simctl-commands-not-responding'
-order: 40
+  - 'deriveddata-contamination-between-ios-test-runs'
+order: 56
+featured: true
 updated: 2026-06-03
 ---
 

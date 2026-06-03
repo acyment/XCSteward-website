@@ -10,9 +10,12 @@ import Cta from '../components/Cta.astro';
 import { SITE } from '../config';
 import { GOOD_FIT, NOT_FIT, HELPS } from '../lib/site-content';
 
-const failures = (await getCollection('failures', ({ data }) => !data.draft)).sort(
-  (a, b) => a.data.order - b.data.order,
-);
+const allFailures = await getCollection('failures', ({ data }) => !data.draft);
+// The landing shows a curated, featured subset; the full set lives at /failures/.
+const failures = allFailures
+  .filter((e) => e.data.featured)
+  .sort((a, b) => a.data.order - b.data.order);
+const failureCount = allFailures.length;
 
 const title = 'XCSteward';
 const fullTitle =
@@ -103,7 +106,8 @@ const description = SITE.description;
       <p>
         Symptom-first writeups of the failures XCSteward is built around. Each
         page has quick checks, manual mitigations, and an honest note on fit —
-        useful even if you never install anything.
+        useful even if you never install anything. A few to start with, from a
+        library of {failureCount}:
       </p>
     </div>
     <ul
@@ -127,7 +131,7 @@ const description = SITE.description;
       }
     </ul>
     <p style="margin-top: 1.25rem;">
-      <a href="/failures/">See the full failure-mode library →</a>
+      <a href="/failures/">See all {failureCount} failure modes →</a>
     </p>
   </section>
 

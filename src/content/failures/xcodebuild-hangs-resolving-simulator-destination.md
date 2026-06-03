@@ -10,11 +10,14 @@ queries:
   - 'xcodebuild stuck resolving destination'
   - 'xcodebuild test hangs before tests start'
   - 'xcodebuild generic/platform=iOS Simulator slow'
+category: readiness
 related:
+  - 'xcodebuild-destination-unavailable'
+  - 'xcodebuild-timed-out-waiting-for-simulator'
   - 'simctl-commands-not-responding'
-  - 'coresimulatorservice-deadlock'
   - 'simulator-booted-tests-never-start'
 order: 10
+featured: true
 updated: 2026-06-03
 ---
 

@@ -10,11 +10,14 @@ queries:
   - 'multiple xcodebuild runs same mac conflict'
   - 'ai agents ios tests simulator collisions'
   - 'parallel simulator tests wedge mac'
+category: agents
 related:
+  - 'ai-coding-agent-xcodebuild-timeout'
+  - 'multiple-xcodebuild-processes-same-mac'
   - 'coresimulatorservice-deadlock'
   - 'simctl-commands-not-responding'
-  - 'xcodebuild-hangs-resolving-simulator-destination'
-order: 60
+order: 90
+featured: true
 updated: 2026-06-03
 ---
 
