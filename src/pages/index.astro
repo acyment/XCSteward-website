@@ -8,55 +8,11 @@ import FitList from '../components/FitList.astro';
 import Callout from '../components/Callout.astro';
 import Cta from '../components/Cta.astro';
 import { SITE } from '../config';
+import { GOOD_FIT, NOT_FIT, HELPS } from '../lib/site-content';
 
 const failures = (await getCollection('failures', ({ data }) => !data.draft)).sort(
   (a, b) => a.data.order - b.data.order,
 );
-
-const goodFit = [
-  'Local simulator test runs that hang before tests start.',
-  'xcodebuild getting stuck resolving or booting destinations.',
-  'simctl or CoreSimulator getting wedged or deadlocked.',
-  'Cleanup and preboot scripts that have become part of the ritual.',
-  'Local, CI-like test workflows running on a Mac.',
-  'Multiple agents, scripts, or humans touching Xcode tooling at once.',
-];
-
-const notFit = [
-  'Broken tests that fail on their own logic.',
-  'App-level UI test flakiness and timing bugs in your test code.',
-  'Code signing and provisioning problems.',
-  'Missing or un-downloaded Xcode runtimes.',
-  'Bugs inside a specific simulator runtime / vendor image.',
-  'Network, backend, or mock-server instability.',
-];
-
-const helps = [
-  {
-    title: 'A controlled local execution lane',
-    body: 'Run tests through one predictable path instead of ad-hoc xcodebuild invocations scattered across scripts and agents.',
-  },
-  {
-    title: 'A scheduler / queue',
-    body: 'Submit runs from multiple agents and scripts; they execute in a coordinated order rather than colliding on shared state.',
-  },
-  {
-    title: 'Readiness checks',
-    body: 'Confirm the simulator subsystem and device are actually ready — not just "Booted" — before handing off to xcodebuild.',
-  },
-  {
-    title: 'Isolated artifacts',
-    body: 'Per-run DerivedData, result bundles, and logs, so concurrent runs do not overwrite each other.',
-  },
-  {
-    title: 'Timeouts and cleanup',
-    body: 'Bound each phase so a wedge becomes a fast, legible failure, and tear down devices and processes deterministically afterward.',
-  },
-  {
-    title: 'Guardrails around concurrency',
-    body: 'Prevent unsafe simultaneous Xcode/Simulator activity from deadlocking CoreSimulator in the first place.',
-  },
-];
 
 const title = 'XCSteward';
 const fullTitle =
@@ -69,7 +25,7 @@ const description = SITE.description;
   <Hero
     eyebrow="Open source · local-first · macOS"
     title="Make local iOS test runs stop hanging."
-    subtitle="XCSteward is an OSS macOS tool for predictable XCTest, xcodebuild, and iOS Simulator execution — especially when coding agents, scripts, and humans share one Mac."
+    subtitle="XCSteward is an OSS macOS tool for predictable XCTest, xcodebuild, and iOS Simulator execution. Local runs are fragile on their own; coding agents, scripts, and CI-like workflows sharing one Mac make it worse."
   >
     <div class="btn-row">
       <Button href={SITE.repo} variant="primary" external>
@@ -90,18 +46,18 @@ const description = SITE.description;
       same time</strong>, on the same Mac.
     </p>
     <p>
-      A single <code>xcodebuild</code> or Simulator run is already fragile. But
-      once several agents, terminals, scripts, CI-like jobs, and a human can all
-      touch Xcode tooling on one machine, the whole thing becomes hard to reason
-      about. Runs hang before tests start. <code>simctl</code> stops responding.
-      CoreSimulator wedges. Failures stop being reproducible.
+      A single <code>xcodebuild</code> or Simulator run is already fragile on its
+      own: runs hang before tests start, <code>simctl</code> stops responding,
+      CoreSimulator wedges. Once several agents, scripts, CI-like jobs, and a
+      human can all touch Xcode tooling on one machine, those same failures get
+      frequent and stop being reproducible.
     </p>
-    <Callout title="Concurrency amplifies, it does not solely cause">
+    <Callout title="Concurrency amplifies — it is not the only cause">
       <p>
-        Most of these failures can happen in a single run. Sharing one Mac
-        between multiple agents and scripts does not invent new problems so much
-        as it makes the existing fragility <em>frequent</em> and <em>hard to
-        debug</em>. XCSteward is honest about that distinction.
+        This matters for positioning: XCSteward is not only a concurrency tool.
+        The baseline fragility shows up even in a single run. Sharing one Mac
+        between agents and scripts mostly makes existing problems more common and
+        harder to debug.
       </p>
     </Callout>
   </section>
@@ -116,8 +72,8 @@ const description = SITE.description;
       </p>
     </div>
     <div class="fit-columns">
-      <FitList tone="good" title="A good fit when" items={goodFit} />
-      <FitList tone="bad" title="Not a fit for" items={notFit} />
+      <FitList tone="good" title="A good fit when" items={GOOD_FIT} />
+      <FitList tone="bad" title="Not a fit for" items={NOT_FIT} />
     </div>
   </section>
 
@@ -131,7 +87,7 @@ const description = SITE.description;
     </p>
     <ul class="feature-list">
       {
-        helps.map((f) => (
+        HELPS.map((f) => (
           <li>
             <strong>{f.title}.</strong> {f.body}
           </li>
@@ -176,10 +132,22 @@ const description = SITE.description;
   </section>
 
   <!-- 7. ALPHA / BETA ASK -->
-  <section class="container prose" aria-labelledby="alpha-heading">
+  <section id="beta" class="container prose" aria-labelledby="alpha-heading">
+    <h2 id="alpha-heading">Try the alpha</h2>
+    <p>
+      Have a real failure mode around <code>xcodebuild</code>, <code>simctl</code>,
+      Simulator readiness, cleanup, local CI-like workflows, or coding agents
+      running iOS tests? Try the OSS alpha, or open an issue with your setup.
+      It is local-first — no signup, no waitlist. The early feedback that helps
+      most is specific: real logs, real setups, real failure modes, and the
+      cases where XCSteward <em>does not</em> help.
+    </p>
     <Cta
-      heading="Trying the alpha"
-      intro="XCSteward is an early, open-source alpha. It is only worth your time if you actually hit these failure modes — please come with real, reproducible pain rather than curiosity. No hype, no waitlist."
+      heading="Bring a real failure mode"
+      intro="Worth your time only if you actually hit these failures — please bring reproducible pain, not curiosity."
     />
+    <p style="margin-top: 1.25rem;">
+      <a href="/beta/">Read the full alpha &amp; reporting guide →</a>
+    </p>
   </section>
 </BaseLayout>

@@ -1,0 +1,59 @@
+---
+/**
+ * "Report a failure mode" CTA. Asks for concrete data (not generic feedback)
+ * and links to a pre-filled GitHub issue. Used on /beta/ and failure pages.
+ */
+import Button from './Button.astro';
+import { SITE } from '../config';
+import { REPORT_FIELDS, buildReportIssueUrl } from '../lib/report';
+
+interface Props {
+  heading?: string;
+  /** Failure-mode title to reference in the issue (e.g. on a failure page). */
+  context?: string;
+  /** Pre-filled issue title. */
+  issueTitle?: string;
+  /** Render the full field checklist (default) or a compact version. */
+  compact?: boolean;
+}
+const {
+  heading = 'Report a failure mode',
+  context,
+  issueTitle = context ? `[failure mode] ${context}` : '[failure mode] ',
+  compact = false,
+} = Astro.props;
+
+const reportUrl = buildReportIssueUrl({ title: issueTitle, context });
+---
+
+<aside class="cta-panel" aria-labelledby="report-heading">
+  <h2 id="report-heading">{heading}</h2>
+  <p>
+    The most useful thing you can send is a <strong>real, reproducible failure</strong>
+    with enough detail to act on. The button below opens a GitHub issue
+    pre-filled with this checklist — fill in what you can.
+  </p>
+  {
+    !compact && (
+      <ul class="report-fields">
+        {REPORT_FIELDS.map((f) => (
+          <li>
+            <strong>{f.label}</strong> <span class="report-fields__hint">— {f.hint}</span>
+          </li>
+        ))}
+      </ul>
+    )
+  }
+  <div class="btn-row">
+    <Button href={reportUrl} variant="primary" external>
+      Report a failure mode
+    </Button>
+    <Button href={SITE.repo} variant="secondary" external>
+      View XCSteward on GitHub
+    </Button>
+  </div>
+  <p class="report-note">
+    No real failure to report yet? That is fine — please don't open a generic
+    issue. Star the repo and come back when something hangs.
+  </p>
+</aside>

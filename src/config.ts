@@ -15,5 +15,6 @@ export const SITE = {
 
 export const NAV = [
   { label: 'Failure modes', href: '/failures/' },
+  { label: 'Try the alpha', href: '/beta/' },
   { label: 'GitHub', href: SITE.repo, external: true },
 ] as const;

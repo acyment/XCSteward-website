@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Failure-mode library
+    url: https://xcsteward.dev/failures/
+    about: Symptom-first writeups with quick checks and manual mitigations — read these first.
+  - name: Discussions
+    url: https://github.com/acyment/XCSteward/discussions
+    about: Open-ended questions or comparing notes that are not a specific failure report.

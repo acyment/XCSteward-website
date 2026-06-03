@@ -6,22 +6,25 @@
  */
 import Button from './Button.astro';
 import { SITE } from '../config';
+import { buildReportIssueUrl } from '../lib/report';
 
 interface Props {
   heading?: string;
   intro?: string;
   /** Pre-fill an issue title to lower the activation energy. */
   issueTitle?: string;
+  /** Failure-mode title referenced in the pre-filled issue body. */
+  context?: string;
 }
 const {
   heading = 'Try the alpha, or tell us where it breaks',
   intro,
   issueTitle,
+  context,
 } = Astro.props;
 
-const issueUrl = issueTitle
-  ? `${SITE.issues}?title=${encodeURIComponent(issueTitle)}`
-  : SITE.issues;
+// Always lead reporters to a structured, pre-filled issue.
+const issueUrl = buildReportIssueUrl({ title: issueTitle, context });
 ---
 
 <aside class="cta-panel" aria-labelledby="cta-heading">

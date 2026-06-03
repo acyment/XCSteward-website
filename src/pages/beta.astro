@@ -1,0 +1,63 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import FitList from '../components/FitList.astro';
+import Button from '../components/Button.astro';
+import ReportFailure from '../components/ReportFailure.astro';
+import { SITE } from '../config';
+import { GOOD_FIT, NOT_FIT, VALUABLE_FEEDBACK } from '../lib/site-content';
+
+const title = 'Try the XCSteward OSS alpha';
+const description =
+  'XCSteward is an early open-source alpha for predictable local XCTest / xcodebuild / iOS Simulator runs. Who should try it, who should not, and what feedback helps most.';
+---
+
+<BaseLayout title={title} fullTitle="Try the XCSteward OSS alpha" description={description}>
+  <section class="container prose" style="margin-top: 2.5rem;">
+    <p class="breadcrumb"><a href="/">Home</a> / Alpha</p>
+    <h1>Try the XCSteward alpha</h1>
+    <p class="lede">
+      Have a real failure mode around <code>xcodebuild</code>, <code>simctl</code>,
+      Simulator readiness, cleanup, local CI-like workflows, or coding agents
+      running iOS tests? Try the OSS alpha, or open an issue with your setup.
+    </p>
+    <div class="btn-row">
+      <Button href={SITE.repo} variant="primary" external>
+        Get it on GitHub
+      </Button>
+      <Button href="/failures/" variant="secondary">
+        Browse failure modes
+      </Button>
+    </div>
+    <p>
+      XCSteward is an early, open-source alpha. It is local-first and runs on your
+      Mac — there is no signup, no waitlist, and no account. The honest deal: it
+      is most useful if you can point it at a real, reproducible failure rather
+      than try it out of curiosity.
+    </p>
+  </section>
+
+  <section class="container" aria-labelledby="who-heading">
+    <div class="prose">
+      <h2 id="who-heading">Who this is for</h2>
+    </div>
+    <div class="fit-columns">
+      <FitList tone="good" title="Worth trying if you hit" items={GOOD_FIT} />
+      <FitList tone="bad" title="Not the right tool for" items={NOT_FIT} />
+    </div>
+  </section>
+
+  <section class="container prose" aria-labelledby="feedback-heading">
+    <h2 id="feedback-heading">What feedback is most valuable</h2>
+    <p>
+      Early on, depth beats volume. The reports that move the tool forward are
+      specific:
+    </p>
+    <ul class="feature-list">
+      {VALUABLE_FEEDBACK.map((item) => <li>{item}</li>)}
+    </ul>
+  </section>
+
+  <section class="container prose">
+    <ReportFailure heading="Send a failure mode" />
+  </section>
+</BaseLayout>

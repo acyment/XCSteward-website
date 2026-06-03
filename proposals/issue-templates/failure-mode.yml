@@ -1,0 +1,130 @@
+name: Failure mode report
+description: Report a real, reproducible local Xcode / simulator test-execution failure.
+title: "[failure mode] "
+labels: ["failure-mode"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting a real failure mode. Concrete detail is what makes a
+        report useful — fill in what you can; partial reports are still welcome.
+
+        This tracker is for **operational fragility** around local test execution
+        (readiness, destinations, lifecycle, cleanup, timeouts, concurrency) — not
+        broken tests, code signing, missing runtimes, or vendor image bugs.
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened
+      description: What you expected vs. what hung or failed.
+      placeholder: "xcodebuild test stalled at 'Resolving destination' for ~4 min, then I cancelled."
+    validations:
+      required: true
+  - type: input
+    id: macos
+    attributes:
+      label: macOS version
+      placeholder: "14.5 (23F79)"
+    validations:
+      required: true
+  - type: input
+    id: xcode
+    attributes:
+      label: Xcode version (and selected one)
+      placeholder: "16.2 (16C5032a); xcode-select -p → /Applications/Xcode.app"
+    validations:
+      required: true
+  - type: textarea
+    id: command
+    attributes:
+      label: Command you ran
+      description: The exact invocation.
+      render: shell
+      placeholder: "xcodebuild test -scheme App -destination 'platform=iOS Simulator,name=iPhone 15'"
+    validations:
+      required: true
+  - type: dropdown
+    id: environment
+    attributes:
+      label: Where did it run?
+      options:
+        - Local (interactive)
+        - CI-like workflow on a Mac
+        - Hosted CI
+    validations:
+      required: true
+  - type: dropdown
+    id: agents
+    attributes:
+      label: Were coding agents involved?
+      options:
+        - "No"
+        - "Yes — one agent"
+        - "Yes — multiple agents"
+    validations:
+      required: true
+  - type: dropdown
+    id: shared-tooling
+    attributes:
+      label: Could multiple agents / scripts / humans / jobs touch Xcode tooling at the same time?
+      options:
+        - "No — single run, nothing else touching it"
+        - "Maybe"
+        - "Yes"
+    validations:
+      required: true
+  - type: input
+    id: destination
+    attributes:
+      label: Simulator destination / runtime
+      placeholder: "iPhone 15, iOS 17.5 (UDID if known)"
+    validations:
+      required: true
+  - type: dropdown
+    id: booted
+    attributes:
+      label: Did the simulator appear booted?
+      options:
+        - "Yes — reached Booted / home screen"
+        - "No"
+        - "Stuck in Booting"
+        - "Not sure"
+    validations:
+      required: true
+  - type: checkboxes
+    id: what-failed
+    attributes:
+      label: What hung or failed?
+      options:
+        - label: xcodebuild
+        - label: simctl
+        - label: Simulator.app
+        - label: the test runner
+        - label: cleanup / teardown
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs / snippets
+      description: Relevant output, a sample/spindump, or a gist link.
+      render: shell
+    validations:
+      required: false
+  - type: dropdown
+    id: cleanup
+    attributes:
+      label: Did manual cleanup help?
+      description: e.g. killing CoreSimulatorService, simctl shutdown all, erase.
+      options:
+        - "Yes"
+        - "No"
+        - "Temporarily"
+        - "Did not try"
+    validations:
+      required: true
+  - type: textarea
+    id: anything-else
+    attributes:
+      label: Anything else
+      description: Workarounds tried, how reproducible it is, related issues.
+    validations:
+      required: false

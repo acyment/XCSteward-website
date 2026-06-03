@@ -68,6 +68,7 @@ const updated = data.updated.toISOString().slice(0, 10);
       <Cta
         heading="Try the alpha, or open an issue with this failure mode"
         issueTitle={`[failure mode] ${data.title}`}
+        context={data.title}
         intro="XCSteward is an early OSS alpha. It is most useful if you can point it at a real, reproducible version of this failure."
       />
     </section>
