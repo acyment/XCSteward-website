@@ -70,6 +70,66 @@ Site-wide constants (repo URL, issue link, author, nav) live in
 in [`src/lib/report.ts`](./src/lib/report.ts) and is the single source of truth
 for both the on-page checklist and the pre-filled GitHub issue body.
 
+## Analytics & privacy
+
+Analytics are **optional, off by default, and privacy-friendly only.** This is an
+OSS developer-tool site — trust matters, so use a cookieless provider and do not
+add ad/behavioral trackers.
+
+[`src/components/Analytics.astro`](./src/components/Analytics.astro) emits **at
+most one** provider's script, and **only in production builds** (`astro build`)
+when that provider's vars are present. `pnpm dev` never emits it, and a build
+with no analytics vars is fully static. See [`.env.example`](./.env.example).
+
+Pick one provider via `PUBLIC_ANALYTICS_PROVIDER`:
+
+| Provider     | Vars required                                      | Pageviews | Custom events |
+| ------------ | -------------------------------------------------- | --------- | ------------- |
+| `plausible`  | `PUBLIC_PLAUSIBLE_DOMAIN` (`PUBLIC_PLAUSIBLE_SRC` opt.) | ✅        | ✅            |
+| `umami`      | `PUBLIC_UMAMI_WEBSITE_ID`, `PUBLIC_UMAMI_SRC`      | ✅        | ✅            |
+| `cloudflare` | `PUBLIC_CLOUDFLARE_ANALYTICS_TOKEN`                | ✅        | ❌ (no API)   |
+
+```sh
+# example: Plausible in production
+PUBLIC_ANALYTICS_PROVIDER=plausible \
+PUBLIC_PLAUSIBLE_DOMAIN=your-domain.example \
+SITE_URL=https://your-domain.example pnpm build
+```
+
+### Conversion events
+
+Core CTA links carry a stable `data-analytics-event` attribute; a tiny delegated
+click listener (loaded only when analytics is on) forwards them to Plausible or
+Umami. The attributes are inert HTML when analytics is off — no per-link
+JavaScript. Tracked events:
+
+| Event                        | Where                                              |
+| ---------------------------- | -------------------------------------------------- |
+| `github_repo_click`          | "View/Get on GitHub" CTAs + nav GitHub link        |
+| `report_failure_click`       | "Report a failure mode" / "Open an issue" buttons  |
+| `beta_cta_click`             | nav "Try the alpha" + landing alpha-guide link     |
+| `failure_related_link_click` | related-failure links on failure pages             |
+
+**Cloudflare Web Analytics is pageview-only** — it has no custom-events API, so
+the four events above are not recorded under that provider. Use Plausible or
+Umami if you need CTA-conversion data. Cookieless config is the owner's
+responsibility to confirm; if you change providers or modes,
+**legal/privacy review is on you** (this repo adds no cookie banner because the
+documented configurations are cookieless).
+
+## Search Console
+
+Google Search Console is the source of query / impression / click data (this
+site only adds lightweight pageview + CTA analytics). After deploy:
+
+1. Add the property (prefer **DNS** verification; or **URL-prefix** via the
+   `PUBLIC_GOOGLE_SITE_VERIFICATION` meta tag — set the env var, rebuild, deploy).
+2. Submit the sitemap: `https://your-domain.example/sitemap-index.xml`.
+3. Check **Coverage / Indexing** for errors and that pages are getting indexed.
+4. Review the **Performance** report ~weekly: queries, impressions, clicks, CTR,
+   average position, and top pages — to see which failure-mode pages earn
+   impressions and clicks.
+
 ## Project layout
 
 ```text
@@ -81,8 +141,8 @@ src/
   lib/
     site-content.ts         # shared copy (good-fit / not-fit / helps / feedback)
     report.ts               # failure-report fields + pre-filled issue URL builder
-  components/               # Seo, Logo, Hero, Button, Cta, ReportFailure,
-                            #   FailureCard, FitList, FitBadge, Callout
+  components/               # Seo, Analytics, Logo, Hero, Button, Cta,
+                            #   ReportFailure, FailureCard, FitList, FitBadge, Callout
   pages/
     index.astro             # landing page (with #beta anchor)
     beta.astro              # /beta/ — shareable alpha + reporting guide

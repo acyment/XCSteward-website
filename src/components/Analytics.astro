@@ -1,0 +1,77 @@
+---
+/**
+ * Optional, privacy-friendly analytics. Emits at most one provider's script,
+ * and only in production builds when the required env vars are present — so
+ * local dev and unconfigured builds stay script-free and fully static.
+ *
+ * Providers (pick one via PUBLIC_ANALYTICS_PROVIDER):
+ *   - plausible  : cookieless pageviews + custom events
+ *   - umami      : cookieless pageviews + custom events
+ *   - cloudflare : cookieless pageviews only (no custom events API)
+ *
+ * Custom CTA events are dispatched from a tiny delegated click listener that
+ * reads `data-analytics-event` attributes — no framework, no per-link handlers.
+ */
+const provider = import.meta.env.PUBLIC_ANALYTICS_PROVIDER;
+const isProd = import.meta.env.PROD;
+
+const plausibleDomain = import.meta.env.PUBLIC_PLAUSIBLE_DOMAIN;
+const plausibleSrc =
+  import.meta.env.PUBLIC_PLAUSIBLE_SRC ?? 'https://plausible.io/js/script.js';
+const umamiId = import.meta.env.PUBLIC_UMAMI_WEBSITE_ID;
+const umamiSrc = import.meta.env.PUBLIC_UMAMI_SRC;
+const cfToken = import.meta.env.PUBLIC_CLOUDFLARE_ANALYTICS_TOKEN;
+
+// Only activate when the selected provider has its required vars AND we are in a
+// production build. Missing/partial config is a no-op (never breaks the build).
+let active: 'plausible' | 'umami' | 'cloudflare' | null = null;
+if (isProd) {
+  if (provider === 'plausible' && plausibleDomain) active = 'plausible';
+  else if (provider === 'umami' && umamiId && umamiSrc) active = 'umami';
+  else if (provider === 'cloudflare' && cfToken) active = 'cloudflare';
+}
+
+const supportsEvents = active === 'plausible' || active === 'umami';
+const cfBeacon = active === 'cloudflare' ? JSON.stringify({ token: cfToken }) : '';
+---
+
+{
+  active === 'plausible' && (
+    <Fragment>
+      <script
+        is:inline
+        defer
+        data-domain={plausibleDomain}
+        src={plausibleSrc}
+      />
+      <script is:inline>
+        window.plausible = window.plausible || function () { (window.plausible.q = window.plausible.q || []).push(arguments) }
+      </script>
+    </Fragment>
+  )
+}
+
+{
+  active === 'umami' && (
+    <script is:inline defer src={umamiSrc} data-website-id={umamiId} />
+  )
+}
+
+{
+  active === 'cloudflare' && (
+    <script
+      is:inline
+      defer
+      src="https://static.cloudflareinsights.com/beacon.min.js"
+      data-cf-beacon={cfBeacon}
+    />
+  )
+}
+
+{
+  supportsEvents && (
+    <script is:inline>
+      document.addEventListener('click', function (e) { var el = e.target && e.target.closest && e.target.closest('[data-analytics-event]'); if (!el) return; var name = el.getAttribute('data-analytics-event'); if (!name) return; try { if (window.plausible) { window.plausible(name) } else if (window.umami) { window.umami.track(name) } } catch (_) {} });
+    </script>
+  )
+}

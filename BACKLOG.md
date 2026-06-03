@@ -20,8 +20,9 @@ items:
 
 ## Possible later (not now)
 
-- [ ] **Analytics** — intentionally NOT added. If added later, prefer a
-      privacy-friendly, no-cookie option and document it. Placeholder only.
+- [x] **Analytics** — optional, privacy-friendly support added
+      (`src/components/Analytics.astro`): Plausible / Umami / Cloudflare via
+      `PUBLIC_*` env vars, prod-only, cookieless, off by default. See README.
 - [ ] A short "install / quickstart" section once the alpha has stable install
       steps, linking from `/beta/`.
 - [ ] More failure-mode pages **only** when backed by real, recurring search

@@ -6,7 +6,11 @@
 import '../styles/global.css';
 import Seo from '../components/Seo.astro';
 import Logo from '../components/Logo.astro';
+import Analytics from '../components/Analytics.astro';
 import { SITE, NAV } from '../config';
+
+// Optional Search Console verification token (configurable, never hardcoded).
+const googleVerification = import.meta.env.PUBLIC_GOOGLE_SITE_VERIFICATION;
 
 interface Props {
   title: string;
@@ -31,7 +35,11 @@ const year = 2026; // build-time constant; bump on rebuild if desired
     <link rel="sitemap" href="/sitemap-index.xml" />
     <meta name="theme-color" content="#3e1778" />
     <meta name="color-scheme" content="light dark" />
+    {googleVerification && (
+      <meta name="google-site-verification" content={googleVerification} />
+    )}
     <Seo {...props} />
+    <Analytics />
   </head>
   <body>
     <a class="skip-link" href="#main">Skip to content</a>
@@ -47,6 +55,7 @@ const year = 2026; // build-time constant; bump on rebuild if desired
             NAV.map((item) => (
               <a
                 href={item.href}
+                data-analytics-event={'event' in item ? item.event : undefined}
                 {...('external' in item && item.external
                   ? { target: '_blank', rel: 'noopener' }
                   : {})}

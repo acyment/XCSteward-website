@@ -4,12 +4,20 @@ interface Props {
   href: string;
   variant?: 'primary' | 'secondary' | 'ghost';
   external?: boolean;
+  /** Analytics event name fired on click (only when analytics is enabled). */
+  event?: string;
 }
-const { href, variant = 'primary', external = false } = Astro.props;
+const { href, variant = 'primary', external = false, event } = Astro.props;
 const rel = external ? 'noopener' : undefined;
 const target = external ? '_blank' : undefined;
 ---
 
-<a class={`btn btn--${variant}`} href={href} rel={rel} target={target}>
+<a
+  class={`btn btn--${variant}`}
+  href={href}
+  rel={rel}
+  target={target}
+  data-analytics-event={event}
+>
   <slot />
 </a>

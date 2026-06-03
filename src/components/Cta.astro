@@ -46,10 +46,10 @@ const issueUrl = buildReportIssueUrl({ title: issueTitle, context });
     </li>
   </ul>
   <div class="btn-row">
-    <Button href={SITE.repo} variant="primary" external>
+    <Button href={SITE.repo} variant="primary" external event="github_repo_click">
       View XCSteward on GitHub
     </Button>
-    <Button href={issueUrl} variant="secondary" external>
+    <Button href={issueUrl} variant="secondary" external event="report_failure_click">
       Open an issue
     </Button>
   </div>

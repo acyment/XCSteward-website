@@ -31,7 +31,7 @@ const description = SITE.description;
     subtitle="XCSteward is an OSS macOS tool for predictable XCTest, xcodebuild, and iOS Simulator execution. Local runs are fragile on their own; coding agents, scripts, and CI-like workflows sharing one Mac make it worse."
   >
     <div class="btn-row">
-      <Button href={SITE.repo} variant="primary" external>
+      <Button href={SITE.repo} variant="primary" external event="github_repo_click">
         View on GitHub
       </Button>
       <Button href="/failures/" variant="secondary">
@@ -151,7 +151,9 @@ const description = SITE.description;
       intro="Worth your time only if you actually hit these failures — please bring reproducible pain, not curiosity."
     />
     <p style="margin-top: 1.25rem;">
-      <a href="/beta/">Read the full alpha &amp; reporting guide →</a>
+      <a href="/beta/" data-analytics-event="beta_cta_click"
+        >Read the full alpha &amp; reporting guide →</a
+      >
     </p>
   </section>
 </BaseLayout>

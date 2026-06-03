@@ -55,7 +55,12 @@ const updated = data.updated.toISOString().slice(0, 10);
           <ul class="related-list">
             {related.map((e) => (
               <li>
-                <a href={`/failures/${e.id}/`}>{e.data.title}</a>
+                <a
+                  href={`/failures/${e.id}/`}
+                  data-analytics-event="failure_related_link_click"
+                >
+                  {e.data.title}
+                </a>
                 <span class="failure-card__class"> — {e.data.symptom}</span>
               </li>
             ))}
