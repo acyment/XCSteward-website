@@ -4,6 +4,11 @@
   "version": "0.1.0",
   "private": true,
   "description": "Static marketing and failure-mode library site for XCSteward.",
+  "packageManager": "pnpm@10.30.3",
+  "engines": {
+    "node": ">=20",
+    "pnpm": ">=10"
+  },
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",
@@ -17,5 +22,8 @@
     "@astrojs/sitemap": "^3.2.1",
     "astro": "^5.1.1",
     "typescript": "^5.7.2"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": ["esbuild", "sharp"]
   }
 }

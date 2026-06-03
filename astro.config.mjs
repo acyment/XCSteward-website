@@ -4,7 +4,7 @@ import sitemap from '@astrojs/sitemap';
 
 // IMPORTANT: update `site` to the real production domain before deploying.
 // It is used for canonical URLs, Open Graph tags, and the sitemap.
-// Override at build time with: SITE_URL=https://example.com npm run build
+// Override at build time with: SITE_URL=https://example.com pnpm build
 const SITE_URL = process.env.SITE_URL ?? 'https://xcsteward.dev';
 
 // https://astro.build/config

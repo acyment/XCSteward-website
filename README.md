@@ -21,21 +21,22 @@ It is a small, fast, static [Astro](https://astro.build/) site:
 ## Prerequisites
 
 - Node.js 20+ (built with Node 22).
-- npm 10+.
+- **pnpm 10+** — this project uses pnpm, not npm or yarn. Enable it with
+  `corepack enable` (the `packageManager` field pins the version).
 
 ## Commands
 
 ```sh
-npm install        # install dependencies
+pnpm install        # install dependencies
 
-npm run dev        # local dev server with HMR (http://localhost:4321)
-npm run build      # type-sync + production build into ./dist
-npm run preview    # serve the built ./dist locally to verify the static output
-npm run check      # astro check — TypeScript + template diagnostics (0 errors expected)
+pnpm dev            # local dev server with HMR (http://localhost:4321)
+pnpm build          # type-sync + production build into ./dist
+pnpm preview        # serve the built ./dist locally to verify the static output
+pnpm check          # astro check — TypeScript + template diagnostics (0 errors expected)
 ```
 
-There is no separate test suite yet; `npm run check` (type/template validation)
-and a clean `npm run build` are the gate for "does this work".
+There is no separate test suite yet; `pnpm check` (type/template validation)
+and a clean `pnpm build` are the gate for "does this work".
 
 ## Configuration
 
@@ -45,7 +46,7 @@ and `robots.txt`. **Update it before deploying.**
 - Edit `site` in [`astro.config.mjs`](./astro.config.mjs), or override per build:
 
   ```sh
-  SITE_URL=https://your-domain.example npm run build
+  SITE_URL=https://your-domain.example pnpm build
   ```
 
 - Update the `Sitemap:` line in [`public/robots.txt`](./public/robots.txt) to match.
@@ -104,10 +105,10 @@ public/
    the call-to-action are rendered automatically from frontmatter.
 4. Keep the language cautious — prefer *"may help"*, *"can reduce"*, *"is worth
    testing against"*. Avoid *"fixes"*, *"solves"*, *"eliminates"* unless proven.
-5. Run `npm run check && npm run build`.
+5. Run `pnpm check && pnpm build`.
 
 ## Deployment
 
-`npm run build` emits a fully static `./dist` (pretty directory URLs) that can be
+`pnpm build` emits a fully static `./dist` (pretty directory URLs) that can be
 served by any static host (GitHub Pages, Cloudflare Pages, Netlify, etc.). Set
 `SITE_URL` to the real domain at build time.
