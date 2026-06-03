@@ -17,6 +17,7 @@
     "check": "astro check",
     "lint:links": "node scripts/check-links.mjs",
     "verify": "astro check && astro build && node scripts/check-links.mjs",
+    "og": "node scripts/gen-og.mjs",
     "astro": "astro"
   },
   "dependencies": {

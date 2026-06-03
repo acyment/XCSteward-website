@@ -35,6 +35,7 @@ pnpm preview        # serve the built ./dist locally to verify the static output
 pnpm check          # astro check — TypeScript + template diagnostics (0 errors expected)
 pnpm lint:links     # validate internal links in ./dist (run after a build)
 pnpm verify         # check + build + lint:links — the full local gate
+pnpm og             # regenerate public/og.png from scripts/og-image.svg
 ```
 
 There is no separate test suite; `pnpm verify` (type/template validation, a clean
@@ -77,13 +78,11 @@ src/
   content.config.ts         # failures collection + typed frontmatter schema
   content/failures/*.md     # one file per failure-mode page
   layouts/BaseLayout.astro  # head, header, footer, skip link
-  components/               # Seo, Hero, Button, Cta, FailureCard, FitList,
-                            #   FitBadge, Callout — small and boring on purpose
   lib/
     site-content.ts         # shared copy (good-fit / not-fit / helps / feedback)
     report.ts               # failure-report fields + pre-filled issue URL builder
-  components/               # Seo, Hero, Button, Cta, ReportFailure, FailureCard,
-                            #   FitList, FitBadge, Callout — small and boring
+  components/               # Seo, Logo, Hero, Button, Cta, ReportFailure,
+                            #   FailureCard, FitList, FitBadge, Callout
   pages/
     index.astro             # landing page (with #beta anchor)
     beta.astro              # /beta/ — shareable alpha + reporting guide
@@ -92,11 +91,14 @@ src/
     failures/[...slug].astro# renders each failure page from the collection
   styles/global.css         # all styling (CSS custom properties + light/dark)
 public/
-  favicon.svg
+  favicon.svg               # brand favicon
+  og.png                    # 1200x630 social share image (generated; committed)
 proposals/
   issue-templates/          # GitHub issue forms to add to the acyment/XCSteward repo
 scripts/
   check-links.mjs           # internal-link validator used by `pnpm lint:links`
+  og-image.svg              # source for og.png (edit this, then run `pnpm og`)
+  gen-og.mjs                # renders og-image.svg → public/og.png (`pnpm og`)
 ```
 
 ## Adding a failure-mode page
@@ -155,15 +157,23 @@ canonical tags, Open Graph, the sitemap, and `robots.txt` all derive from it.
 Locally, verify the exact artifact you will ship:
 
 ```sh
-SITE_URL=https://your-domain.example pnpm build
-pnpm preview        # serves ./dist on http://localhost:4321
+pnpm install                                       # deps
+pnpm verify                                        # check + build + link audit
+pnpm og                                            # only if og-image.svg changed
+SITE_URL=https://your-domain.example pnpm build    # production build
+pnpm preview                                       # serve ./dist on :4321
 ```
+
+> **Before launch:** replace `your-domain.example` with the real domain
+> everywhere you set `SITE_URL`. There is no other place to change it — the
+> default `https://xcsteward.dev` is only a placeholder fallback.
 
 ### Published URLs
 
 - Sitemap index: `https://your-domain.example/sitemap-index.xml`
+  — submit this to **Google Search Console** / Bing Webmaster after deploy.
 - robots.txt: `https://your-domain.example/robots.txt`
-  (its `Sitemap:` line should point back at the sitemap index above)
+  (its `Sitemap:` line points back at the sitemap index above)
 
 ### Post-deploy smoke test
 

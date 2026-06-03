@@ -4,6 +4,9 @@ Deferred work and deliberate non-goals. Kept short and honest.
 
 ## Before / around launch
 
+See [`LAUNCH_CHECKLIST.md`](./LAUNCH_CHECKLIST.md) for the full ordered list. Key
+items:
+
 - [ ] **Set `SITE_URL`** to the real production domain in the host's build env.
       Until then builds use the documented placeholder `https://xcsteward.dev`.
 - [ ] **Install the issue-form templates** in the tool repo
@@ -11,8 +14,9 @@ Deferred work and deliberate non-goals. Kept short and honest.
       Reporting already works without them (pre-filled issue body); the templates
       just add the nicer GitHub form UI. If installed, optionally switch
       `buildReportIssueUrl()` to pass `template=failure-mode.yml`.
-- [ ] Add an OG/social share image (`og:image`) once branding exists. `Seo.astro`
-      currently ships `summary` Twitter cards without an image.
+- [x] OG/social share image — `public/og.png` ships and `Seo.astro` emits a
+      `summary_large_image` card. Regenerate with `pnpm og` after editing
+      `scripts/og-image.svg`.
 
 ## Possible later (not now)
 
