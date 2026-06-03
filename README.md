@@ -122,13 +122,27 @@ documented configurations are cookieless).
 Google Search Console is the source of query / impression / click data (this
 site only adds lightweight pageview + CTA analytics). After deploy:
 
-1. Add the property (prefer **DNS** verification; or **URL-prefix** via the
+1. **Verify the property** (prefer **DNS** verification; or **URL-prefix** via the
    `PUBLIC_GOOGLE_SITE_VERIFICATION` meta tag — set the env var, rebuild, deploy).
-2. Submit the sitemap: `https://your-domain.example/sitemap-index.xml`.
-3. Check **Coverage / Indexing** for errors and that pages are getting indexed.
-4. Review the **Performance** report ~weekly: queries, impressions, clicks, CTR,
+2. **Submit the sitemap:** `https://REAL_DOMAIN/sitemap-index.xml`.
+3. **URL-inspect** the homepage, `/failures/`, and 2–3 failure pages; request
+   indexing for each.
+4. **Check indexing** after a few days (Coverage / Indexing report — no errors,
+   pages getting indexed).
+5. Review the **Performance** report ~weekly: queries, impressions, clicks, CTR,
    average position, and top pages — to see which failure-mode pages earn
    impressions and clicks.
+
+### Outreach URLs
+
+Share these directly (no tracking parameters by default — add UTMs later only if
+you decide to):
+
+- Homepage: `https://REAL_DOMAIN/`
+- Alpha / reporting guide: `https://REAL_DOMAIN/beta/`
+- Failure-mode library: `https://REAL_DOMAIN/failures/`
+- 2–3 failure pages most relevant to the person you're contacting, e.g.
+  `https://REAL_DOMAIN/failures/coding-agents-ios-simulator-tests/`
 
 ## Project layout
 
@@ -208,11 +222,32 @@ Vercel, GitHub Pages, S3, …). No server runtime is required.
 | Build command    | `pnpm build`                           |
 | Output directory | `dist`                                 |
 | Node version     | 20+                                    |
-| Required env var  | `SITE_URL=https://your-domain.example` |
+| Required env var | `SITE_URL=https://REAL_DOMAIN`         |
 
-Set `SITE_URL` in the host's environment-variables UI (or pass it inline as
-shown above). It is the **one** place the production domain is configured;
-canonical tags, Open Graph, the sitemap, and `robots.txt` all derive from it.
+Any static host works (Cloudflare Pages, Netlify, Vercel, GitHub Pages, S3, …);
+no provider-specific config ships in this repo. `SITE_URL` is the **one** place
+the production domain is configured — canonical tags, Open Graph, the sitemap,
+and `robots.txt` all derive from it.
+
+### Environment variables (build-time)
+
+All of these are **read at build time** and inlined into the static output, so
+**changing any of them requires a rebuild + redeploy** — there is no runtime
+config. Set them in the host's build-environment UI (or inline on the build).
+The site builds fine with **none** of them set; see [`.env.example`](./.env.example).
+
+```bash
+SITE_URL=https://REAL_DOMAIN                 # canonical / OG / sitemap / robots
+
+# Analytics — optional, pick ONE provider (cookieless; prod builds only)
+PUBLIC_ANALYTICS_PROVIDER=plausible          # plausible | umami | cloudflare
+PUBLIC_PLAUSIBLE_DOMAIN=REAL_DOMAIN          # plausible
+PUBLIC_UMAMI_WEBSITE_ID=...                  # umami
+PUBLIC_UMAMI_SRC=https://cloud.umami.is/script.js   # umami
+PUBLIC_CLOUDFLARE_ANALYTICS_TOKEN=...        # cloudflare (pageviews only)
+
+PUBLIC_GOOGLE_SITE_VERIFICATION=...          # optional Search Console meta tag
+```
 
 Locally, verify the exact artifact you will ship:
 
@@ -235,20 +270,26 @@ pnpm preview                                       # serve ./dist on :4321
 - robots.txt: `https://your-domain.example/robots.txt`
   (its `Sitemap:` line points back at the sitemap index above)
 
-### Post-deploy smoke test
+### Live smoke test (after deploy)
 
-After the first deploy, confirm:
+On the deployed site, confirm:
 
-- [ ] `SITE_URL` was set for the build (not the placeholder).
-- [ ] `/`, `/failures/`, `/beta/`, and a sample failure page load over HTTPS.
-- [ ] `view-source` on `/` shows a `<link rel="canonical">` with the **real**
-      domain (not `xcsteward.dev`).
-- [ ] `/robots.txt` resolves and its `Sitemap:` line uses the real domain.
-- [ ] `/sitemap-index.xml` → `/sitemap-0.xml` lists all pages with the real domain.
-- [ ] The hero "View on GitHub" and a "Report a failure mode" button open the
-      correct GitHub URLs (the report button lands on a pre-filled issue).
-- [ ] Dark mode renders (toggle OS appearance) and the layout works on a phone.
-- [ ] Optionally submit the sitemap in Google Search Console / Bing Webmaster.
+- [ ] `/` (homepage) loads over HTTPS.
+- [ ] `/beta/` loads.
+- [ ] `/failures/` loads.
+- [ ] One failure page loads (e.g. `/failures/coresimulatorservice-deadlock/`).
+- [ ] `view-source` on `/`: `<link rel="canonical">` uses the **real** domain
+      (not `xcsteward.dev`).
+- [ ] `view-source` on `/`: `og:image` uses the **real** domain.
+- [ ] `/sitemap-index.xml` loads.
+- [ ] `/robots.txt` loads and its `Sitemap:` line points at the real sitemap.
+- [ ] `/og.png` loads (share image renders).
+- [ ] `/favicon.svg` loads.
+- [ ] Analytics: a pageview arrives in the provider dashboard.
+- [ ] (Plausible/Umami) clicking a GitHub CTA records `github_repo_click`.
+- [ ] (Plausible/Umami) clicking "Report a failure mode" records `report_failure_click`.
+
+(Cloudflare Web Analytics is pageview-only — the CTA events do not apply there.)
 
 ## GitHub issue templates
 
@@ -257,3 +298,8 @@ The "Report a failure mode" CTAs link to `acyment/XCSteward/issues/new` with a
 Proposed GitHub issue-form templates for the tool repo live in
 [`proposals/issue-templates/`](./proposals/issue-templates/) — see the README
 there for how to install them.
+
+> **Recommended before heavy outreach:** install a `failure-mode-report` issue
+> template in the **main XCSteward repo** (`acyment/XCSteward`) so reporters get
+> the structured GitHub form. Reporting is not broken without it — the link
+> still pre-fills the body — so this does **not** block deployment.
