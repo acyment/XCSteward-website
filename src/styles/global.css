@@ -10,71 +10,112 @@
   --font-mono: ui-monospace, "SF Mono", "SFMono-Regular", Menlo, Consolas,
     "Liberation Mono", monospace;
 
-  /* Light palette */
-  --bg: #fbfbfa;
-  --bg-elev: #ffffff;
-  --bg-subtle: #f3f3f1;
-  --border: #e2e1dd;
-  --border-strong: #cbcac4;
-  --text: #1c1b19;
-  --text-muted: #5c5b56;
-  --text-faint: #807e78;
-  --accent: #1f6feb;
-  --accent-hover: #1a5fce;
-  --accent-soft: #e8f0fe;
-  --code-bg: #f4f4f2;
-  --code-text: #2b2a27;
+  /* ---- Brand, derived from logo.svg ----
+     deep purple #3e1778 + lighter violet #7f50cd. Interactive purple is
+     deepened to #6d3fc7 so link/UI text clears WCAG AA on light surfaces. */
+  --primary: #6d3fc7; /* interactive: links, primary buttons */
+  --primary-strong: #3e1778; /* deep purple from logo: hovers, emphasis */
+  --primary-soft: #efe9fb; /* tinted fill behind accents */
+  --violet: #7f50cd; /* lighter brand violet: decoration, large fills */
 
-  /* Fit-level signal colors */
-  --fit-strong: #1a7f4b;
+  /* Surfaces (subtle violet tint instead of neutral gray) */
+  --bg: #fbfaff;
+  --bg-elev: #ffffff;
+  --bg-subtle: #f3f0fb;
+  --border: #e6e1f2;
+  --border-strong: #cfc6e6;
+  --text: #1b1626;
+  --text-muted: #585070;
+  --text-faint: #6a6282; /* AA on light surfaces for small meta text */
+
+  /* Back-compat aliases (existing rules use --accent*) */
+  --accent: var(--primary);
+  --accent-hover: var(--primary-strong);
+  --accent-soft: var(--primary-soft);
+
+  /* Inline code */
+  --code-bg: #f0eafb;
+  --code-text: #4a2f86;
+
+  /* Terminal-style code blocks (intentionally dark in both modes) */
+  --term-bg: #1d1630;
+  --term-text: #e9e4f6;
+  --term-border: #322748;
+  --term-accent: #9b78e8;
+  --term-comment: #9d8fc4;
+
+  /* Logo fills (overridable per mode for legibility) */
+  --logo-primary: #3e1778;
+  --logo-secondary: #7f50cd;
+
+  /* Fit-level signal colors (kept semantically distinct from purple) */
+  --fit-strong: #167045;
   --fit-strong-bg: #e6f4ec;
-  --fit-partial: #9a6a00;
-  --fit-partial-bg: #fbf1d9;
-  --fit-out: #8a5a5a;
-  --fit-out-bg: #f6ecec;
+  --fit-partial: #8a5a00;
+  --fit-partial-bg: #f7eed6;
+  --fit-out: #9a5560;
+  --fit-out-bg: #f6ebee;
 
   /* Callout colors */
-  --note-bg: #eef2f7;
-  --note-border: #b9c6d8;
-  --warn-bg: #fbf1d9;
-  --warn-border: #e5cd8a;
+  --note-bg: #f1ecfb;
+  --note-border: #cdbff0;
+  --warn-bg: #f9efd6;
+  --warn-border: #e6cd8a;
 
-  --radius: 10px;
-  --radius-sm: 7px;
+  --radius: 12px;
+  --radius-sm: 8px;
   --maxw: 64rem;
   --maxw-prose: 44rem;
-  --shadow: 0 1px 2px rgba(0, 0, 0, 0.05), 0 1px 3px rgba(0, 0, 0, 0.04);
+  --shadow: 0 1px 2px rgba(62, 23, 120, 0.06), 0 4px 14px rgba(62, 23, 120, 0.05);
+  --shadow-hover: 0 2px 6px rgba(62, 23, 120, 0.1),
+    0 10px 28px rgba(62, 23, 120, 0.1);
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --bg: #14151a;
-    --bg-elev: #1b1d24;
-    --bg-subtle: #20232b;
-    --border: #2c2f38;
-    --border-strong: #3a3e49;
-    --text: #e8e8ea;
-    --text-muted: #a7a9b2;
-    --text-faint: #7e818c;
-    --accent: #5b9bff;
-    --accent-hover: #7db0ff;
-    --accent-soft: #1c2740;
-    --code-bg: #1f222b;
-    --code-text: #d6d8de;
+    /* Lightened violets for legibility on a deep, faintly purple ground */
+    --primary: #a98bf5;
+    --primary-strong: #c4adfb;
+    --primary-soft: #241c3b;
+    --violet: #9b78e8;
+
+    --bg: #110e1a;
+    --bg-elev: #191527;
+    --bg-subtle: #201a33;
+    --border: #2c2542;
+    --border-strong: #41385f;
+    --text: #ece8f6;
+    --text-muted: #aaa2c2;
+    --text-faint: #807997;
+
+    --code-bg: #241c3b;
+    --code-text: #d3c4f7;
+
+    --term-bg: #1a1330;
+    --term-text: #e9e4f6;
+    --term-border: #322748;
+    --term-accent: #a98bf5;
+    --term-comment: #9182b6;
+
+    /* Lift the deep-purple logo arm so it reads on dark */
+    --logo-primary: #b196f0;
+    --logo-secondary: #9b78e8;
 
     --fit-strong: #5fd49a;
-    --fit-strong-bg: #133326;
-    --fit-partial: #e2b85a;
-    --fit-partial-bg: #322a12;
-    --fit-out: #d99b9b;
-    --fit-out-bg: #2f1e1e;
+    --fit-strong-bg: #123226;
+    --fit-partial: #e0b65a;
+    --fit-partial-bg: #2e2713;
+    --fit-out: #e29aa6;
+    --fit-out-bg: #2f1c20;
 
-    --note-bg: #1a2230;
-    --note-border: #2f435f;
-    --warn-bg: #2c2613;
-    --warn-border: #5a4a1c;
+    --note-bg: #1d1636;
+    --note-border: #3a2f5e;
+    --warn-bg: #2b2413;
+    --warn-border: #564818;
 
-    --shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 1px 3px rgba(0, 0, 0, 0.3);
+    --shadow: 0 1px 2px rgba(0, 0, 0, 0.5), 0 4px 16px rgba(0, 0, 0, 0.4);
+    --shadow-hover: 0 2px 6px rgba(0, 0, 0, 0.55),
+      0 12px 30px rgba(0, 0, 0, 0.5);
   }
 }
 
@@ -201,15 +242,19 @@ code {
   border: 1px solid var(--border);
 }
 
+/* Terminal-style command block: dark in both modes, with a violet "lane"
+   accent down the left edge echoing the logo's routed lanes. */
 pre {
-  background: var(--code-bg);
-  color: var(--code-text);
-  border: 1px solid var(--border);
+  background: var(--term-bg);
+  color: var(--term-text);
+  border: 1px solid var(--term-border);
+  border-left: 3px solid var(--term-accent);
   border-radius: var(--radius-sm);
-  padding: 1rem 1.1rem;
+  padding: 1rem 1.15rem;
   overflow-x: auto;
   font-size: 0.86rem;
-  line-height: 1.55;
+  line-height: 1.6;
+  box-shadow: var(--shadow);
 }
 
 pre code {
@@ -217,6 +262,12 @@ pre code {
   border: none;
   padding: 0;
   font-size: inherit;
+  color: inherit;
+}
+
+/* Shell comments (lines starting with #) read as muted inside the terminal. */
+pre .token-comment {
+  color: var(--term-comment);
 }
 
 /* ---- Accessibility ---- */
@@ -261,11 +312,30 @@ pre code {
 
 .site-header {
   border-bottom: 1px solid var(--border);
-  background: color-mix(in srgb, var(--bg) 88%, transparent);
-  backdrop-filter: saturate(160%) blur(8px);
+  background: color-mix(in srgb, var(--bg) 85%, transparent);
+  backdrop-filter: saturate(160%) blur(10px);
   position: sticky;
   top: 0;
   z-index: 50;
+}
+
+/* Hairline brand gradient under the header — the "lane" tying head to page. */
+.site-header::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--primary) 25%,
+    var(--violet) 60%,
+    transparent
+  );
+  opacity: 0.5;
+  pointer-events: none;
 }
 
 .site-header__inner {
@@ -291,17 +361,9 @@ pre code {
   color: var(--text);
 }
 
-.brand__mark {
-  display: inline-grid;
-  place-items: center;
-  width: 1.6rem;
-  height: 1.6rem;
-  border-radius: 6px;
-  background: var(--accent);
-  color: #fff;
-  font-family: var(--font-mono);
-  font-size: 0.95rem;
-  font-weight: 700;
+.brand__logo {
+  display: block;
+  flex: none;
 }
 
 .site-nav {
@@ -330,8 +392,30 @@ pre code {
 .site-footer__inner {
   display: flex;
   flex-wrap: wrap;
-  gap: 1rem 2rem;
+  gap: 1.25rem 2.5rem;
   justify-content: space-between;
+  align-items: flex-start;
+}
+
+.site-footer__brand {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  max-width: 38ch;
+}
+
+.site-footer__brand p {
+  margin: 0;
+}
+
+.site-footer__brand .logo {
+  opacity: 0.9;
+}
+
+.site-footer__nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.1rem;
 }
 
 .site-footer a {
@@ -360,34 +444,69 @@ pre code {
 
 .btn:hover {
   text-decoration: none;
+  transform: translateY(-1px);
 }
 
+.btn:active {
+  transform: translateY(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .btn,
+  .btn:hover,
+  .btn:active {
+    transform: none;
+  }
+}
+
+/* Primary: filled brand gradient (deep purple → violet), lifts on hover. */
 .btn--primary {
-  background: var(--accent);
+  background-image: linear-gradient(
+    135deg,
+    var(--primary-strong),
+    var(--primary)
+  );
   color: #fff;
-  border-color: var(--accent);
+  border-color: transparent;
+  box-shadow: 0 1px 2px rgba(62, 23, 120, 0.25);
 }
 
 .btn--primary:hover {
-  background: var(--accent-hover);
-  border-color: var(--accent-hover);
+  background-image: linear-gradient(135deg, #34115f, var(--primary-strong));
   color: #fff;
+  box-shadow: var(--shadow-hover);
 }
 
+/* Secondary: outlined, violet-tinted border. */
 .btn--secondary {
   background: var(--bg-elev);
-  color: var(--text);
+  color: var(--primary-strong);
   border-color: var(--border-strong);
 }
 
 .btn--secondary:hover {
-  background: var(--bg-subtle);
-  color: var(--text);
+  background: var(--primary-soft);
+  border-color: var(--primary);
+  color: var(--primary-strong);
+}
+
+/* Ghost: lowest-emphasis tier for tertiary links. */
+.btn--ghost {
+  background: transparent;
+  color: var(--text-muted);
+  border-color: transparent;
+  padding-inline: 0.4rem;
+}
+
+.btn--ghost:hover {
+  color: var(--primary-strong);
+  background: var(--primary-soft);
 }
 
 .btn-row {
   display: flex;
   flex-wrap: wrap;
+  align-items: center;
   gap: 0.75rem;
   margin-top: 1.5rem;
 }
@@ -395,7 +514,32 @@ pre code {
 /* ---- Hero ---- */
 
 .hero {
+  position: relative;
   padding-block: clamp(2.5rem, 1rem + 6vw, 5rem) 1rem;
+  overflow: hidden;
+}
+
+/* Decorative routed-lanes motif from the logo: a convergence node feeding
+   three lanes out to ring nodes. Purely decorative, low opacity, off on
+   small screens and when reduced motion / data-saver is irrelevant here. */
+.hero::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  right: -1.5rem;
+  width: 240px;
+  height: 210px;
+  transform: translateY(-46%);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='210' viewBox='0 0 240 210' fill='none' stroke='%237f50cd' stroke-width='4' stroke-linecap='round'%3E%3Cpath d='M28 105 L150 42'/%3E%3Cpath d='M28 105 L162 105'/%3E%3Cpath d='M28 105 L150 168'/%3E%3Ccircle cx='28' cy='105' r='7' fill='%237f50cd' stroke='none'/%3E%3Ccircle cx='170' cy='42' r='10'/%3E%3Ccircle cx='182' cy='105' r='10'/%3E%3Ccircle cx='170' cy='168' r='10'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  opacity: 0.4;
+  pointer-events: none;
+}
+
+@media (max-width: 56rem) {
+  .hero::after {
+    display: none;
+  }
 }
 
 .hero__eyebrow {
@@ -403,12 +547,18 @@ pre code {
   font-family: var(--font-mono);
   font-size: 0.8rem;
   letter-spacing: 0.02em;
-  color: var(--text-muted);
-  background: var(--bg-subtle);
-  border: 1px solid var(--border);
-  padding: 0.25rem 0.6rem;
+  color: var(--primary-strong);
+  background: var(--primary-soft);
+  border: 1px solid var(--border-strong);
+  padding: 0.25rem 0.7rem;
   border-radius: 999px;
   margin-bottom: 1.1rem;
+}
+
+.hero__title,
+.hero__subtitle {
+  position: relative;
+  z-index: 1;
 }
 
 .hero__title {
@@ -464,8 +614,42 @@ pre code {
   height: 100%;
 }
 
-.failure-card:hover {
-  border-color: var(--border-strong);
+/* Left "lane" accent that grows in on hover/focus-within. */
+.failure-card::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.9rem;
+  bottom: 0.9rem;
+  width: 3px;
+  border-radius: 3px;
+  background: linear-gradient(var(--primary), var(--violet));
+  transform: scaleY(0);
+  transform-origin: top;
+  transition: transform 0.18s ease;
+}
+
+.failure-card:hover,
+.failure-card:focus-within {
+  border-color: var(--primary);
+  box-shadow: var(--shadow-hover);
+  transform: translateY(-2px);
+}
+
+.failure-card:hover::before,
+.failure-card:focus-within::before {
+  transform: scaleY(1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .failure-card,
+  .failure-card:hover,
+  .failure-card:focus-within {
+    transform: none;
+  }
+  .failure-card::before {
+    transition: none;
+  }
 }
 
 .failure-card__title {
@@ -523,9 +707,9 @@ pre code {
   gap: 0.35rem;
   font-size: 0.78rem;
   font-weight: 600;
-  padding: 0.16rem 0.55rem;
+  padding: 0.16rem 0.6rem;
   border-radius: 999px;
-  border: 1px solid transparent;
+  border: 1px solid color-mix(in srgb, currentColor 25%, transparent);
   white-space: nowrap;
 }
 
@@ -694,18 +878,20 @@ pre code {
 }
 
 .failure-body :is(h2) {
-  margin-top: 2.5rem;
+  margin-top: 2.75rem;
   padding-top: 0.5rem;
   scroll-margin-top: 5rem;
 }
 
+/* Node + lane motif from the logo: a filled node feeding a short lane. */
 .failure-body :is(h2)::before {
   content: "";
   display: block;
-  width: 2.5rem;
-  border-top: 2px solid var(--accent);
-  margin-bottom: 0.9rem;
-  opacity: 0.55;
+  width: 48px;
+  height: 10px;
+  margin-bottom: 0.85rem;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='10' viewBox='0 0 48 10' fill='none'%3E%3Ccircle cx='5' cy='5' r='4' fill='%237f50cd'/%3E%3Cpath d='M10 5 H48' stroke='%237f50cd' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
 }
 
 .related-list {
@@ -714,6 +900,23 @@ pre code {
   margin: 0;
   display: grid;
   gap: 0.75rem;
+}
+
+.related-list li {
+  position: relative;
+  padding-left: 1.3rem;
+}
+
+/* Node marker echoing the logo's routed endpoints. */
+.related-list li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.55em;
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+  border: 2px solid var(--violet);
 }
 
 /* ---- Breadcrumb ---- */
@@ -739,10 +942,24 @@ pre code {
 /* ---- CTA panel ---- */
 
 .cta-panel {
-  background: var(--bg-subtle);
-  border: 1px solid var(--border);
+  position: relative;
+  background:
+    linear-gradient(var(--bg-elev), var(--bg-elev)) padding-box,
+    var(--primary-soft);
+  border: 1px solid var(--border-strong);
   border-radius: var(--radius);
   padding: 1.75rem;
+  overflow: hidden;
+  box-shadow: var(--shadow);
+}
+
+/* Brand gradient lane along the top edge of the panel. */
+.cta-panel::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--primary-strong), var(--violet));
 }
 
 .cta-panel h2 {

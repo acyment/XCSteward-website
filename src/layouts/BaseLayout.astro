@@ -5,6 +5,7 @@
  */
 import '../styles/global.css';
 import Seo from '../components/Seo.astro';
+import Logo from '../components/Logo.astro';
 import { SITE, NAV } from '../config';
 
 interface Props {
@@ -28,7 +29,7 @@ const year = 2026; // build-time constant; bump on rebuild if desired
     <meta name="generator" content={Astro.generator} />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="sitemap" href="/sitemap-index.xml" />
-    <meta name="theme-color" content="#1f6feb" />
+    <meta name="theme-color" content="#3e1778" />
     <meta name="color-scheme" content="light dark" />
     <Seo {...props} />
   </head>
@@ -38,7 +39,7 @@ const year = 2026; // build-time constant; bump on rebuild if desired
     <header class="site-header">
       <div class="container site-header__inner">
         <a class="brand" href="/" aria-label={`${SITE.name} home`}>
-          <span class="brand__mark" aria-hidden="true">XC</span>
+          <Logo height={26} class="brand__logo" />
           <span>{SITE.name}</span>
         </a>
         <nav class="site-nav" aria-label="Primary">
@@ -64,14 +65,18 @@ const year = 2026; // build-time constant; bump on rebuild if desired
 
     <footer class="site-footer">
       <div class="container site-footer__inner">
-        <p>
-          {SITE.name} — open-source, local-first tooling for predictable iOS/macOS
-          test execution. Built by {SITE.author}.
-        </p>
-        <nav aria-label="Footer">
-          <a href="/">Home</a> &middot;
-          <a href="/failures/">Failure modes</a> &middot;
-          <a href={SITE.repo} target="_blank" rel="noopener">GitHub</a> &middot;
+        <div class="site-footer__brand">
+          <Logo height={22} />
+          <p>
+            {SITE.name} — open-source, local-first tooling for predictable
+            iOS/macOS test execution. Built by {SITE.author}.
+          </p>
+        </div>
+        <nav class="site-footer__nav" aria-label="Footer">
+          <a href="/">Home</a>
+          <a href="/failures/">Failure modes</a>
+          <a href="/beta/">Try the alpha</a>
+          <a href={SITE.repo} target="_blank" rel="noopener">GitHub</a>
           <a href={SITE.issues} target="_blank" rel="noopener">Open an issue</a>
         </nav>
         <p class="visually-hidden">© {year} {SITE.author}</p>

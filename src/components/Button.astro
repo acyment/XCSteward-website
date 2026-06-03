@@ -2,7 +2,7 @@
 /** A single link styled as a button. Used to compose CTA rows. */
 interface Props {
   href: string;
-  variant?: 'primary' | 'secondary';
+  variant?: 'primary' | 'secondary' | 'ghost';
   external?: boolean;
 }
 const { href, variant = 'primary', external = false } = Astro.props;
