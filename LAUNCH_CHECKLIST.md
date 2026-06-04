@@ -61,6 +61,16 @@ Concise, ordered steps to take the site live and start beta recruitment.
 - [ ] Review **Performance** ~weekly: queries, impressions, clicks, CTR, average
       position, top pages (which failure-mode pages earn clicks).
 
+## Discoverability (SEO / AEO)
+
+- [ ] After deploy, `pnpm indexnow` (submits sitemap URLs to Bing/IndexNow).
+      Re-run after meaningful content changes.
+- [ ] Spot-check `/llms.txt`, `/llms-full.txt`, and the IndexNow key file
+      (`/<hex>.txt`) load on the live domain.
+- [ ] Confirm JSON-LD is present (view-source: `application/ld+json`).
+- [ ] Periodically prompt-test target queries in ChatGPT/Claude/Perplexity to
+      see if XCSteward is surfaced; watch Umami referrers for AI engines.
+
 ## Before heavy outreach (non-blocking)
 
 - [ ] Install a `failure-mode-report` issue template in the main XCSteward repo

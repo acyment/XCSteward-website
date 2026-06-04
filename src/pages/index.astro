@@ -21,9 +21,31 @@ const title = 'XCSteward';
 const fullTitle =
   'XCSteward — predictable local XCTest & iOS Simulator test execution';
 const description = SITE.description;
+
+const origin = (Astro.site ?? new URL('https://xcsteward.com')).origin;
+const softwareLd = {
+  '@context': 'https://schema.org',
+  '@type': 'SoftwareApplication',
+  name: SITE.name,
+  applicationCategory: 'DeveloperApplication',
+  operatingSystem: 'macOS',
+  url: `${origin}/`,
+  description,
+  isAccessibleForFree: true,
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+  license: 'https://www.apache.org/licenses/LICENSE-2.0',
+  codeRepository: SITE.repo,
+  sameAs: [SITE.repo],
+  author: { '@type': 'Person', name: SITE.author },
+};
 ---
 
-<BaseLayout title={title} fullTitle={fullTitle} description={description}>
+<BaseLayout
+  title={title}
+  fullTitle={fullTitle}
+  description={description}
+  jsonLd={softwareLd}
+>
   <!-- 1. HERO -->
   <Hero
     eyebrow="Open source · local-first · macOS"

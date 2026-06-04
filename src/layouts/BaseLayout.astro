@@ -7,6 +7,7 @@ import '../styles/global.css';
 import Seo from '../components/Seo.astro';
 import Logo from '../components/Logo.astro';
 import Analytics from '../components/Analytics.astro';
+import JsonLd from '../components/JsonLd.astro';
 import { SITE, NAV } from '../config';
 
 // Optional Search Console verification token (configurable, never hardcoded).
@@ -19,10 +20,34 @@ interface Props {
   type?: 'website' | 'article';
   publishedTime?: string;
   noindex?: boolean;
+  /** Page-specific schema.org JSON-LD block(s). */
+  jsonLd?: Record<string, unknown> | Array<Record<string, unknown>>;
 }
 
-const props = Astro.props;
+const { jsonLd, ...props } = Astro.props;
 const year = 2026; // build-time constant; bump on rebuild if desired
+
+// Site-wide JSON-LD: Organization + WebSite, referenced by page-level blocks.
+const origin = (Astro.site ?? new URL('https://xcsteward.com')).origin;
+const orgId = `${origin}/#org`;
+const siteGraph = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Organization',
+    '@id': orgId,
+    name: SITE.name,
+    url: `${origin}/`,
+    sameAs: [SITE.repo],
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    url: `${origin}/`,
+    name: SITE.name,
+    description: SITE.description,
+    publisher: { '@id': orgId },
+  },
+];
 ---
 
 <!doctype html>
@@ -39,6 +64,8 @@ const year = 2026; // build-time constant; bump on rebuild if desired
       <meta name="google-site-verification" content={googleVerification} />
     )}
     <Seo {...props} />
+    <JsonLd schema={siteGraph} />
+    {jsonLd && <JsonLd schema={jsonLd} />}
     <Analytics />
   </head>
   <body>

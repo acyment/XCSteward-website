@@ -36,6 +36,7 @@ pnpm check          # astro check — TypeScript + template diagnostics (0 error
 pnpm lint:links     # validate internal links in ./dist (run after a build)
 pnpm verify         # check + build + lint:links — the full local gate
 pnpm og             # regenerate public/og.png from scripts/og-image.svg
+pnpm indexnow       # submit built sitemap URLs to IndexNow (run after deploy)
 ```
 
 There is no separate test suite; `pnpm verify` (type/template validation, a clean
@@ -143,6 +144,31 @@ you decide to):
 - 2–3 failure pages most relevant to the person you're contacting, e.g.
   `https://REAL_DOMAIN/failures/coding-agents-ios-simulator-tests/`
 
+## Discoverability (SEO / AEO)
+
+Beyond Search Console, the site is built to be machine-consumable by LLMs and
+answer engines (the actual audience includes coding agents):
+
+- **`/llms.txt`** — a curated map for LLMs/agents
+  ([llmstxt.org](https://llmstxt.org)), generated from the failures collection
+  ([`src/pages/llms.txt.ts`](./src/pages/llms.txt.ts)).
+- **`/llms-full.txt`** — every failure page as raw Markdown in one fetch
+  ([`src/pages/llms-full.txt.ts`](./src/pages/llms-full.txt.ts)).
+- **JSON-LD** structured data ([`src/components/JsonLd.astro`](./src/components/JsonLd.astro)):
+  `Organization` + `WebSite` site-wide, `SoftwareApplication` on the homepage,
+  `TechArticle` + `BreadcrumbList` on each failure page.
+- **AI crawlers are intentionally allowed** in `robots.txt` (GPTBot, ClaudeBot,
+  PerplexityBot, Google-Extended, …) so the content is citable.
+- **Sitemap `lastmod`** is set per page from each page's `updated` frontmatter.
+- **IndexNow** (Bing / ChatGPT Search / Copilot): a key file lives in
+  `public/<key>.txt`; after a production build, run `pnpm indexnow` to submit the
+  sitemap URLs. It refuses to submit a non-production domain. Re-run after
+  meaningful content changes.
+
+There's no clean "an agent read my page" metric — watch Umami referrers
+(chatgpt.com / perplexity.ai / gemini.google.com) and periodically prompt-test
+the target queries in ChatGPT/Claude/Perplexity to see if you're surfaced.
+
 ## Project layout
 
 ```text
@@ -154,17 +180,20 @@ src/
   lib/
     site-content.ts         # shared copy (good-fit / not-fit / helps / feedback)
     report.ts               # failure-report fields + pre-filled issue URL builder
-  components/               # Seo, Analytics, Logo, Hero, Button, Cta,
+  components/               # Seo, Analytics, JsonLd, Logo, Hero, Button, Cta,
                             #   ReportFailure, FailureCard, FitList, FitBadge, Callout
   pages/
     index.astro             # landing page (with #beta anchor)
     beta.astro              # /beta/ — shareable alpha + reporting guide
-    robots.txt.ts           # robots.txt generated from SITE_URL
+    robots.txt.ts           # robots.txt generated from SITE_URL (AI crawlers allowed)
+    llms.txt.ts             # /llms.txt — curated map for LLMs/agents
+    llms-full.txt.ts        # /llms-full.txt — all failure pages as Markdown
     failures/index.astro    # failure-mode library index
     failures/[...slug].astro# renders each failure page from the collection
   styles/global.css         # all styling (CSS custom properties + light/dark)
 public/
   favicon.svg               # brand favicon
+  <hex>.txt                 # IndexNow key file (matches pnpm indexnow)
   og.png                    # 1200x630 social share image (generated; committed)
 proposals/
   issue-templates/          # GitHub issue forms to add to the acyment/XCSteward repo
