@@ -154,6 +154,9 @@ answer engines (the actual audience includes coding agents):
   ([`src/pages/llms.txt.ts`](./src/pages/llms.txt.ts)).
 - **`/llms-full.txt`** — every failure page as raw Markdown in one fetch
   ([`src/pages/llms-full.txt.ts`](./src/pages/llms-full.txt.ts)).
+- **Agent skills / context packs** can point at `/llms.txt` for the curated map
+  and `/llms-full.txt` for the full Markdown corpus instead of duplicating the
+  hand-written failure-mode copy in each tool-specific skill.
 - **JSON-LD** structured data ([`src/components/JsonLd.astro`](./src/components/JsonLd.astro)):
   `Organization` + `WebSite` site-wide, `SoftwareApplication` on the homepage,
   `TechArticle` + `BreadcrumbList` on each failure page.
