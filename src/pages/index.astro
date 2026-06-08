@@ -121,7 +121,26 @@ const softwareLd = {
     </ul>
   </section>
 
-  <!-- 6. FAILURE-MODE LIBRARY -->
+  <!-- 6. MCP DIFFERENTIATION -->
+  <section class="container prose" aria-labelledby="vs-mcp-heading">
+    <h2 id="vs-mcp-heading">How this differs from Xcode / XCTest MCPs</h2>
+    <p>
+      MCPs are useful bridges: they let agents invoke Xcode, Simulator, or
+      XCTest. XCSteward is lower-level: it coordinates access to fragile shared
+      local state — CoreSimulator, simulator lifecycle, DerivedData, artifacts,
+      process cleanup, and timeouts — so agents, scripts, and humans don't all
+      call <code>xcodebuild</code> / <code>simctl</code> directly and race on
+      the same simulator.
+    </p>
+    <p>
+      An MCP that calls <code>xcodebuild</code> is a consumer of the simulator
+      subsystem. XCSteward is a governor of it. The two are complementary: an
+      agent can use an Xcode MCP to drive test runs while XCSteward serialises
+      those runs and keeps CoreSimulator healthy underneath.
+    </p>
+  </section>
+
+  <!-- 7. FAILURE-MODE LIBRARY -->
   <section class="container" aria-labelledby="library-heading">
     <div class="prose">
       <h2 id="library-heading">Failure-mode library</h2>
@@ -157,7 +176,7 @@ const softwareLd = {
     </p>
   </section>
 
-  <!-- 7. ALPHA / BETA ASK -->
+  <!-- 8. ALPHA / BETA ASK -->
   <section id="beta" class="container prose" aria-labelledby="alpha-heading">
     <h2 id="alpha-heading">Try the alpha</h2>
     <p>
