@@ -125,18 +125,20 @@ const softwareLd = {
   <section class="container prose" aria-labelledby="vs-mcp-heading">
     <h2 id="vs-mcp-heading">How this differs from Xcode / XCTest MCPs</h2>
     <p>
-      MCPs are useful bridges: they let agents invoke Xcode, Simulator, or
-      XCTest. XCSteward is lower-level: it coordinates access to fragile shared
-      local state — CoreSimulator, simulator lifecycle, DerivedData, artifacts,
-      process cleanup, and timeouts — so agents, scripts, and humans don't all
-      call <code>xcodebuild</code> / <code>simctl</code> directly and race on
-      the same simulator.
+      MCPs are useful bridges: they let coding agents call Xcode, Simulator,
+      or XCTest-related tools.
     </p>
     <p>
-      An MCP that calls <code>xcodebuild</code> is a consumer of the simulator
-      subsystem. XCSteward is a governor of it. The two are complementary: an
-      agent can use an Xcode MCP to drive test runs while XCSteward serialises
-      those runs and keeps CoreSimulator healthy underneath.
+      XCSteward solves a different problem. It sits underneath those
+      invocations and coordinates execution against fragile shared local state:
+      CoreSimulator, simulator boot/shutdown, readiness, DerivedData, result
+      bundles, logs, timeouts, cleanup, and process ownership.
+    </p>
+    <p>
+      In other words: MCPs help an agent <em>ask for</em> a test run.
+      XCSteward makes that test run happen through a controlled local lane
+      instead of letting every agent, script, job, and human call
+      <code>xcodebuild</code> / <code>simctl</code> directly.
     </p>
   </section>
 
