@@ -29,8 +29,16 @@ export default defineConfig({
   site: SITE_URL,
   output: 'static',
   trailingSlash: 'ignore',
+  // The alpha/reporting page lives at /try/ (stage-agnostic, evergreen). The
+  // old /beta/ URL is kept alive as a redirect so shared links never 404.
+  redirects: {
+    '/beta': '/try',
+    '/beta/': '/try/',
+  },
   integrations: [
     sitemap({
+      // Keep the /beta redirect stub out of the sitemap; /try/ is canonical.
+      filter: (page) => !/\/beta\/?$/.test(new URL(page).pathname),
       serialize(item) {
         const { pathname } = new URL(item.url);
         item.lastmod = lastmodByPath.get(pathname) ?? newestIso;

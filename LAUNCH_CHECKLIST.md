@@ -37,7 +37,7 @@ Concise, ordered steps to take the site live and start beta recruitment.
 ## Live smoke (after deploy)
 
 - [ ] `/` (homepage) loads.
-- [ ] `/beta/` loads.
+- [ ] `/try/` loads (and `/beta/` redirects to it).
 - [ ] `/failures/` loads.
 - [ ] One failure page loads.
 - [ ] Canonical URL uses the **real** domain (view-source `/`).
@@ -82,9 +82,9 @@ Concise, ordered steps to take the site live and start beta recruitment.
 Share these URLs (no tracking params by default):
 
 - Homepage `https://REAL_DOMAIN/`
-- Alpha / reporting guide `https://REAL_DOMAIN/beta/`
+- Alpha / reporting guide `https://REAL_DOMAIN/try/` (old `/beta/` redirects here)
 - Failure-mode library `https://REAL_DOMAIN/failures/`
 - 2–3 relevant failure pages for the person you're contacting
 
-- [ ] Post the LinkedIn launch / beta ask (link to `/` or `/beta/`).
-- [ ] Use the failure pages + `/beta/` in targeted outreach (DMs, GitHub, Reddit).
+- [ ] Post the LinkedIn launch / alpha ask (link to `/` or `/try/`).
+- [ ] Use the failure pages + `/try/` in targeted outreach (DMs, GitHub, Reddit).

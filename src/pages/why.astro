@@ -1,0 +1,252 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import FitList from '../components/FitList.astro';
+import Button from '../components/Button.astro';
+import Cta from '../components/Cta.astro';
+import { SITE } from '../config';
+import { NOT_FIT, HELPS } from '../lib/site-content';
+
+const title = 'Why XCSteward exists';
+const description =
+  'Why coding agents expose fragile iOS simulator/XCTest execution, and why ' +
+  'XCSteward adds a local stewardship layer beneath xcodebuild, simctl, MCPs, ' +
+  'scripts, and humans.';
+
+const LEDGER = 'https://github.com/acyment/XCSteward/blob/main/docs/dogfood-ledger.md';
+
+// Claim-level boundaries — distinct from NOT_FIT (which is symptom scope).
+const NOT_CLAIMED: string[] = [
+  'It does not fix all XCTest flakiness.',
+  'It does not fix bad tests or wrong assertions.',
+  'It does not replace your CI.',
+  'It does not replace XcodeBuildMCP or any other MCP.',
+  'It does not make the iOS Simulator perfectly reliable.',
+  'It does not patch Apple / Xcode / CoreSimulator bugs.',
+  'It is alpha software, and is honest about that.',
+];
+
+const origin = (Astro.site ?? new URL('https://xcsteward.com')).origin;
+const aboutLd = {
+  '@context': 'https://schema.org',
+  '@type': 'AboutPage',
+  name: title,
+  url: `${origin}/why/`,
+  description,
+  about: {
+    '@type': 'SoftwareApplication',
+    name: SITE.name,
+    applicationCategory: 'DeveloperApplication',
+    operatingSystem: 'macOS',
+    url: `${origin}/`,
+  },
+};
+---
+
+<BaseLayout title={title} description={description} jsonLd={aboutLd}>
+  <!-- 1. TITLE -->
+  <section class="container prose" style="margin-top: 2.5rem;">
+    <p class="breadcrumb"><a href="/">Home</a> / Why</p>
+    <h1>Why XCSteward exists</h1>
+    <p class="lede">
+      Coding agents made an old iOS testing problem impossible to ignore: local
+      simulator test execution is fragile shared state.
+    </p>
+  </section>
+
+  <!-- 2. ORIGIN STORY -->
+  <section class="container prose" aria-labelledby="origin-heading">
+    <h2 id="origin-heading">Where this came from</h2>
+    <p>
+      I started XCSteward while dogfooding coding agents on my own iOS projects.
+      The agents were genuinely useful — but to do their job they kept invoking
+      <code>xcodebuild</code>, <code>simctl</code>, and XCTest, over and over,
+      against real simulators on my Mac.
+    </p>
+    <p>
+      On a lot of stacks, running tests locally is comparatively boring. On
+      macOS with iOS simulators it is not. Test execution leans on a pile of
+      fragile shared state: CoreSimulator, booted devices, <code>simctl</code>,
+      <code>xcodebuild</code>, DerivedData, <code>.xcresult</code> bundles, logs,
+      timeouts, cleanup — and state that survives failed or interrupted runs.
+      Once an agent is driving that machinery on a loop, the environment did not
+      merely become &ldquo;hard to reason about.&rdquo; It broke.
+    </p>
+    <p>The concrete failures looked like this:</p>
+    <ul class="feature-list">
+      <li>Wedged or unresponsive simulators.</li>
+      <li>Boots, shutdowns, or erases that failed or hung.</li>
+      <li><code>xcodebuild</code> timing out with no clean exit.</li>
+      <li>Destination resolution hanging before tests even started.</li>
+      <li>CoreSimulator getting into a state nothing could talk to.</li>
+      <li>Corrupt or missing build artifacts.</li>
+      <li>Lost logs and missing <code>.xcresult</code> bundles after a crash.</li>
+      <li>No obvious recovery steps short of killing processes and rebooting.</li>
+    </ul>
+    <p>
+      None of this is exotic. Anyone who has run iOS tests on a Mac for long
+      enough has hit some of it. The agents did not invent these failures — they
+      just hit them far more often than I ever did by hand, and left the machine
+      in a worse state each time.
+    </p>
+  </section>
+
+  <!-- 3. NOT GENERIC FLAKINESS -->
+  <section class="container" aria-labelledby="flaky-heading">
+    <div class="prose">
+      <h2 id="flaky-heading">This is not generic test flakiness</h2>
+      <p>
+        It is worth being precise, because &ldquo;flaky tests&rdquo; is a broad
+        complaint and XCSteward only addresses a narrow slice of it. It targets
+        <strong>operational fragility in test execution</strong> — the simulator
+        and the local Mac environment around your tests — not the tests
+        themselves. If your assertion is wrong, your UI selector is racy, your
+        backend is down, or your snapshot baseline is stale, XCSteward has
+        nothing useful to say.
+      </p>
+    </div>
+    <div class="fit-columns">
+      <FitList
+        tone="bad"
+        title="Out of scope — these are test or app problems"
+        items={NOT_FIT}
+      />
+      <FitList
+        tone="good"
+        title="In scope — execution-environment fragility"
+        items={[
+          'Simulator runs that hang before tests start.',
+          'xcodebuild stuck resolving or booting destinations.',
+          'simctl / CoreSimulator wedged or deadlocked.',
+          'Artifacts and logs lost when a run is interrupted.',
+          'Stale device or DerivedData state leaking between runs.',
+        ]}
+      />
+    </div>
+  </section>
+
+  <!-- 4. WHY AGENTS AMPLIFY -->
+  <section class="container prose" aria-labelledby="agents-heading">
+    <h2 id="agents-heading">Why coding agents made it urgent</h2>
+    <p>
+      A human usually runs one test command, waits, looks at the result, and
+      runs the next one. Agents, scripts, and hooks do not work that way. They
+      can fire more commands, more often, and sometimes concurrently — a build
+      here, a re-run there, a cleanup script in between. Put two or three
+      projects on the same Mac, each with its own agent, and the pressure on
+      CoreSimulator and the Simulator subsystem multiplies.
+    </p>
+    <p>
+      The important framing: the problem is <em>not</em> &ldquo;AI wrote bad
+      code.&rdquo; It is that AI increased the rate and concurrency of access to
+      an execution subsystem that was already fragile under a single careful
+      user. The invocation path — agent, human, shell script, hook, MCP, or a
+      local CI-like job — is not the core issue. The issue is that all of them
+      touch the same fragile shared state, and nothing coordinates that access.
+    </p>
+  </section>
+
+  <!-- 5. MCPs ARE BRIDGES; XCSTEWARD IS THE LANE -->
+  <section class="container" aria-labelledby="vs-mcp-heading">
+    <aside class="mcp-callout">
+      <p class="mcp-callout__eyebrow">Complementary to MCPs, not a replacement</p>
+      <h2 id="vs-mcp-heading" class="mcp-callout__title">
+        MCPs help an agent <em>ask for</em> a test run. XCSteward makes that
+        test run happen through a controlled local lane.
+      </h2>
+      <p>
+        Existing Xcode / XCTest MCPs are useful bridges — they let an agent call
+        Xcode, Simulator, or XCTest tools. Shell commands, hooks, and scripts do
+        the same job from a different angle. They are all <em>invocation
+        paths</em>: ways to request that a run happen.
+      </p>
+      <p class="mcp-callout__kicker">
+        XCSteward coordinates what happens <em>after</em> a run is requested.
+        It does not by itself lease devices, isolate DerivedData and artifacts,
+        preserve logs, serialize competing runs, or clean up broken state —
+        which is exactly the gap XCSteward fills, sitting underneath your MCP,
+        shell, and hooks rather than competing with them.
+      </p>
+    </aside>
+  </section>
+
+  <!-- 6. WHAT IT DOES -->
+  <section class="container prose" aria-labelledby="does-heading">
+    <h2 id="does-heading">What XCSteward does</h2>
+    <p>
+      Concretely, it is a local stewardship layer that runs close to your tools
+      and governs how runs execute:
+    </p>
+    <ul class="feature-list">
+      {
+        HELPS.map((f) => (
+          <li>
+            <strong>{f.title}.</strong> {f.body}
+          </li>
+        ))
+      }
+    </ul>
+    <p>
+      Plus structured output — JSON and durable artifacts — so both a human and
+      an agent can tell what happened, instead of scraping a scrollback buffer
+      that may already be gone.
+    </p>
+  </section>
+
+  <!-- 7. WHAT IT DOES NOT CLAIM -->
+  <section class="container prose" aria-labelledby="not-claim-heading">
+    <h2 id="not-claim-heading">What XCSteward does not claim</h2>
+    <p>
+      Narrow tools earn trust by being honest about their edges. So, plainly:
+    </p>
+    <ul class="feature-list">
+      {NOT_CLAIMED.map((item) => <li>{item}</li>)}
+    </ul>
+  </section>
+
+  <!-- 8. WHY LOCAL-FIRST -->
+  <section class="container prose" aria-labelledby="local-heading">
+    <h2 id="local-heading">Why local-first</h2>
+    <p>
+      The failure happens on the Mac that owns the simulator state. That is
+      where <code>xcodebuild</code>, <code>simctl</code>, CoreSimulator,
+      DerivedData, logs, and the devices themselves live. A steward that is going
+      to lease devices, enforce readiness, isolate artifacts, and clean up wedged
+      state has to run there too — right next to the thing it is protecting.
+    </p>
+    <p>
+      This is not an argument against hosted CI. Hosted CI is still useful, and
+      XCSteward is not trying to replace it. It targets a different layer: the
+      local, shared-Mac execution environment where agents, scripts, hooks, and a
+      human are all reaching for the same simulators at once.
+    </p>
+  </section>
+
+  <!-- 9. CTA -->
+  <section class="container prose" aria-labelledby="cta-heading">
+    <h2 id="cta-heading">If this sounds familiar</h2>
+    <p>
+      XCSteward is most useful to people who have actually felt this: iOS
+      developers using coding agents, mobile platform engineers, iOS CI and
+      test-infra owners, and anyone who has watched a simulator wedge, a boot
+      fail, an <code>xcodebuild</code> hang, or an <code>.xcresult</code> bundle
+      vanish. If that is you, try the alpha or share a failure mode — the most
+      valuable feedback is a real, reproducible one.
+    </p>
+    <Cta
+      heading="Try the alpha, or tell us where it breaks"
+      intro="It is open-source and local-first — no signup, no waitlist. Bring a real failure mode rather than curiosity."
+    />
+    <p style="margin-top: 1.25rem;">
+      <Button href="/try/" variant="secondary" event="beta_cta_click">
+        Try the alpha
+      </Button>
+      <Button href="/failures/" variant="secondary">
+        Browse the failure-mode library
+      </Button>
+    </p>
+    <p class="dogfood-note">
+      XCSteward is dogfooded on my own real iOS projects — each run is tracked in
+      the public <a href={LEDGER}>dogfood ledger</a>.
+    </p>
+  </section>
+</BaseLayout>

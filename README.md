@@ -139,7 +139,7 @@ Share these directly (no tracking parameters by default — add UTMs later only 
 you decide to):
 
 - Homepage: `https://REAL_DOMAIN/`
-- Alpha / reporting guide: `https://REAL_DOMAIN/beta/`
+- Alpha / reporting guide: `https://REAL_DOMAIN/try/` (old `/beta/` redirects here)
 - Failure-mode library: `https://REAL_DOMAIN/failures/`
 - 2–3 failure pages most relevant to the person you're contacting, e.g.
   `https://REAL_DOMAIN/failures/coding-agents-ios-simulator-tests/`
@@ -187,7 +187,7 @@ src/
                             #   ReportFailure, FailureCard, FitList, FitBadge, Callout
   pages/
     index.astro             # landing page (with #beta anchor)
-    beta.astro              # /beta/ — shareable alpha + reporting guide
+    try.astro               # /try/ — shareable alpha + reporting guide (/beta/ redirects here)
     robots.txt.ts           # robots.txt generated from SITE_URL (AI crawlers allowed)
     llms.txt.ts             # /llms.txt — curated map for LLMs/agents
     llms-full.txt.ts        # /llms-full.txt — all failure pages as Markdown
@@ -316,7 +316,7 @@ config change means a rebuild on the VPS. Step-by-step go-live is in
 On the deployed site, confirm:
 
 - [ ] `/` (homepage) loads over HTTPS.
-- [ ] `/beta/` loads.
+- [ ] `/try/` loads (and `/beta/` redirects to it).
 - [ ] `/failures/` loads.
 - [ ] One failure page loads (e.g. `/failures/coresimulatorservice-deadlock/`).
 - [ ] `view-source` on `/`: `<link rel="canonical">` uses the **real** domain

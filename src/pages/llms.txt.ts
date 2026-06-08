@@ -33,8 +33,12 @@ export const GET: APIRoute = async ({ site }) => {
   lines.push('## Key pages');
   lines.push('');
   lines.push(`- [Home](${base}/): what XCSteward is, who it is and is not for`);
+  lines.push(
+    `- [Why XCSteward exists](${base}/why/): origin story — why coding agents ` +
+      `expose fragile iOS simulator/XCTest execution, and how XCSteward differs from MCPs`,
+  );
   lines.push(`- [Failure-mode library](${base}/failures/): symptom-first writeups`);
-  lines.push(`- [Try the alpha](${base}/beta/): how to try it and report a failure mode`);
+  lines.push(`- [Try the alpha](${base}/try/): how to try it and report a failure mode`);
   lines.push(`- [Source on GitHub](${SITE.repo})`);
   lines.push('');
 

@@ -1,5 +1,5 @@
 /**
- * Shared marketing copy used in more than one place (landing + /beta/).
+ * Shared marketing copy used in more than one place (landing + /try/).
  * Kept here so the lists do not drift between pages.
  */
 

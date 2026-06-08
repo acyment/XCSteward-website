@@ -87,7 +87,36 @@ const softwareLd = {
     </Callout>
   </section>
 
-  <!-- 3 & 4. GOOD FIT / NOT A FIT -->
+  <!-- 3. HOW THIS DIFFERS FROM MCPs — moved up and made visually prominent
+       so a cold visitor catches the positioning before the feature rundown. -->
+  <section class="container" aria-labelledby="vs-mcp-heading">
+    <aside class="mcp-callout">
+      <p class="mcp-callout__eyebrow">XCSteward is not another Xcode / XCTest MCP</p>
+      <h2 id="vs-mcp-heading" class="mcp-callout__title">
+        MCPs help an agent <em>ask for</em> a test run. XCSteward makes that
+        test run actually happen through a controlled local lane.
+      </h2>
+      <p>
+        MCPs are useful bridges, and XCSteward is complementary to them — not a
+        replacement or a criticism. An MCP lets a coding agent call Xcode,
+        Simulator, or XCTest-related tools. XCSteward sits <em>underneath</em>
+        those invocations and coordinates execution against fragile shared local
+        state: CoreSimulator, simulator boot/shutdown, readiness, DerivedData,
+        result bundles, logs, timeouts, cleanup, and process ownership.
+      </p>
+      <p class="mcp-callout__kicker">
+        Keep your MCP, shell scripts, and hooks. XCSteward makes the run they
+        trigger happen through one controlled local lane, instead of letting
+        every agent, script, job, and human call <code>xcodebuild</code> /
+        <code>simctl</code> directly.
+      </p>
+      <p class="mcp-callout__more">
+        <a href="/why/">Why XCSteward exists — the longer story →</a>
+      </p>
+    </aside>
+  </section>
+
+  <!-- 4 & 5. GOOD FIT / NOT A FIT -->
   <section class="container" aria-labelledby="fit-heading">
     <div class="prose">
       <h2 id="fit-heading">Is this for you?</h2>
@@ -119,27 +148,6 @@ const softwareLd = {
         ))
       }
     </ul>
-  </section>
-
-  <!-- 6. MCP DIFFERENTIATION -->
-  <section class="container prose" aria-labelledby="vs-mcp-heading">
-    <h2 id="vs-mcp-heading">How this differs from Xcode / XCTest MCPs</h2>
-    <p>
-      MCPs are useful bridges: they let coding agents call Xcode, Simulator,
-      or XCTest-related tools.
-    </p>
-    <p>
-      XCSteward solves a different problem. It sits underneath those
-      invocations and coordinates execution against fragile shared local state:
-      CoreSimulator, simulator boot/shutdown, readiness, DerivedData, result
-      bundles, logs, timeouts, cleanup, and process ownership.
-    </p>
-    <p>
-      In other words: MCPs help an agent <em>ask for</em> a test run.
-      XCSteward makes that test run happen through a controlled local lane
-      instead of letting every agent, script, job, and human call
-      <code>xcodebuild</code> / <code>simctl</code> directly.
-    </p>
   </section>
 
   <!-- 7. FAILURE-MODE LIBRARY -->
@@ -189,14 +197,37 @@ const softwareLd = {
       most is specific: real logs, real setups, real failure modes, and the
       cases where XCSteward <em>does not</em> help.
     </p>
+
+    <p>Install with Homebrew:</p>
+    <pre><code><span class="token-comment"># requires macOS with a recent local Xcode</span>
+brew tap acyment/tap
+brew install xcsteward</code></pre>
+
+    <p class="dogfood-note">
+      Dogfooded on my own real iOS projects — each run is tracked in the public
+      <a href="https://github.com/acyment/XCSteward/blob/main/docs/dogfood-ledger.md"
+        >dogfood ledger</a
+      >. It is honest about where it stands: early, alpha-stage OSS, narrow on
+      purpose.
+    </p>
+
     <Cta
       heading="Bring a real failure mode"
       intro="Worth your time only if you actually hit these failures — please bring reproducible pain, not curiosity."
     />
     <p style="margin-top: 1.25rem;">
-      <a href="/beta/" data-analytics-event="beta_cta_click"
+      <a href="/try/" data-analytics-event="beta_cta_click"
         >Read the full alpha &amp; reporting guide →</a
       >
     </p>
+    <p class="byline">
+      Built by <a href="https://github.com/acyment" rel="author">Alan Cyment</a>,
+      a Buenos Aires&ndash;based developer and organizational consultant,
+      while dogfooding coding agents on iOS projects.
+    </p>
   </section>
+
+  {/* TODO (optional, future): a single evergreen /why/ page expanding the
+      MCP-vs-execution-layer distinction for deep-linking from outreach. Do NOT
+      add a blog — a stale blog would read worse than none. */}
 </BaseLayout>
