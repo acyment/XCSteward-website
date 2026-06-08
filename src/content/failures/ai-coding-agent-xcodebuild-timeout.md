@@ -10,13 +10,15 @@ queries:
   - 'ai coding agent xcodebuild timeout'
   - 'coding agent ios tests hang'
   - 'agent xcodebuild stuck simulator'
+  - 'coding agent xcodebuild hangs before tests start'
+  - 'agent retry storm xcodebuild simulator'
   - 'claude cursor xcodebuild timeout simulator'
 related:
   - 'coding-agents-ios-simulator-tests'
   - 'multiple-xcodebuild-processes-same-mac'
   - 'xcodebuild-timed-out-waiting-for-simulator'
 order: 92
-updated: 2026-06-03
+updated: 2026-06-08
 ---
 
 ## Symptom

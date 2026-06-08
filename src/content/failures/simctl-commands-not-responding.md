@@ -9,6 +9,8 @@ queries:
   - 'simctl commands not responding'
   - 'xcrun simctl list hangs'
   - 'simctl boot hangs forever'
+  - 'xcrun simctl shutdown all hangs'
+  - 'simctl list devices never returns'
   - 'simctl not responding macos'
 category: lifecycle
 related:
@@ -18,7 +20,7 @@ related:
   - 'xcodebuild-hangs-resolving-simulator-destination'
 order: 30
 featured: true
-updated: 2026-06-03
+updated: 2026-06-08
 ---
 
 ## Symptom

@@ -9,6 +9,8 @@ queries:
   - 'xcodebuild hangs resolving simulator destination'
   - 'xcodebuild stuck resolving destination'
   - 'xcodebuild test hangs before tests start'
+  - 'xcodebuild stuck before Testing started'
+  - 'xcodebuild hangs at Resolving destination specifier'
   - 'xcodebuild generic/platform=iOS Simulator slow'
 category: readiness
 related:
@@ -18,7 +20,7 @@ related:
   - 'simulator-booted-tests-never-start'
 order: 10
 featured: true
-updated: 2026-06-03
+updated: 2026-06-08
 ---
 
 ## Symptom

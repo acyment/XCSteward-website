@@ -18,14 +18,59 @@ const groups = CATEGORY_ORDER.map((cat: Category) => ({
     .sort((a, b) => a.data.order - b.data.order),
 })).filter((g) => g.items.length > 0);
 
+const seenQueries = new Set<string>();
+const searchRows = groups
+  .flatMap((g) =>
+    g.items.flatMap((entry) =>
+      entry.data.queries.map((query) => ({
+        query,
+        title: entry.data.title,
+        href: `/failures/${entry.id}/`,
+      })),
+    ),
+  )
+  .filter((row) => {
+    const key = row.query.toLocaleLowerCase();
+    if (seenQueries.has(key)) return false;
+    seenQueries.add(key);
+    return true;
+  });
+
 const total = entries.length;
 
-const title = 'XCSteward failure-mode library';
+const title = 'iOS Simulator hang and xcodebuild failure library';
 const description =
-  'A hand-written library of local Xcode, xcodebuild, simctl, and iOS Simulator test-execution failures — grouped by failure class, with quick checks, manual mitigations, and where XCSteward may help.';
+  'A hand-written library for iOS Simulator hangs, xcodebuild timeouts, simctl/CoreSimulator stalls, destination errors, and agent-amplified local test failures.';
+
+const origin = (Astro.site ?? new URL('https://xcsteward.com')).origin;
+const pageUrl = `${origin}/failures/`;
+const orderedEntries = groups.flatMap((g) => g.items);
+const jsonLd = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage',
+    name: title,
+    description,
+    url: pageUrl,
+    about: searchRows.map((row) => ({ '@type': 'Thing', name: row.query })),
+    isPartOf: { '@type': 'WebSite', name: 'XCSteward', url: `${origin}/` },
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'ItemList',
+    name: 'XCSteward failure modes',
+    itemListElement: orderedEntries.map((entry, index) => ({
+      '@type': 'ListItem',
+      position: index + 1,
+      url: `${origin}/failures/${entry.id}/`,
+      name: entry.data.title,
+      description: entry.data.symptom,
+    })),
+  },
+];
 ---
 
-<BaseLayout title={title} description={description} fullTitle={`${title}`}>
+<BaseLayout title={title} description={description} fullTitle={`${title}`} jsonLd={jsonLd}>
   <section class="container prose" style="margin-top: 2.5rem;">
     <p class="breadcrumb"><a href="/">Home</a> / Failure modes</p>
     <h1>Failure-mode library</h1>
@@ -56,6 +101,29 @@ const description =
         ))
       }
     </nav>
+  </section>
+
+  <section class="container" aria-labelledby="search-pain-heading">
+    <div class="prose">
+      <h2 id="search-pain-heading">Search by error message or stuck point</h2>
+      <p class="lede">
+        These are the kinds of phrases people paste after a local run wedges:
+        simulator boot hangs, destination resolution stalls, <code>simctl</code>
+        stops responding, or the test runner never attaches.
+      </p>
+    </div>
+    <ul class="phrase-index" role="list">
+      {
+        searchRows.map((row) => (
+          <li>
+            <a href={row.href}>
+              <code>{row.query}</code>
+              <span>{row.title}</span>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
   </section>
 
   {

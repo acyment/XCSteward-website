@@ -10,13 +10,15 @@ queries:
   - 'xcodebuild unable to find a device matching the destination'
   - 'xcodebuild ineligible destinations'
   - 'xcodebuild destination unavailable'
+  - 'Ineligible destinations for scheme'
+  - 'Unable to find a destination matching the provided destination specifier'
   - 'requested device could not be found simulator'
 related:
   - 'xcodebuild-hangs-resolving-simulator-destination'
   - 'no-devices-found-ios-simulator-ci'
   - 'unable-to-boot-the-simulator'
 order: 12
-updated: 2026-06-03
+updated: 2026-06-08
 ---
 
 ## Symptom

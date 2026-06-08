@@ -877,6 +877,26 @@ pre .token-comment {
   color: var(--text-faint);
 }
 
+.query-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  list-style: none;
+  padding: 0;
+  margin: 1rem 0 0;
+}
+
+.query-chips li {
+  margin: 0;
+  color: var(--text-muted);
+  background: var(--bg-elev);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 0.18rem 0.6rem;
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+}
+
 .failure-body :is(h2) {
   margin-top: 2.75rem;
   padding-top: 0.5rem;
@@ -917,6 +937,22 @@ pre .token-comment {
   height: 0.5rem;
   border-radius: 50%;
   border: 2px solid var(--violet);
+}
+
+.qa-list {
+  display: grid;
+  gap: 1rem;
+  margin: 0;
+}
+
+.qa-list dt {
+  font-weight: 650;
+  color: var(--text);
+}
+
+.qa-list dd {
+  margin: -0.65rem 0 0;
+  color: var(--text-muted);
 }
 
 /* ---- Breadcrumb ---- */
@@ -1037,6 +1073,49 @@ pre .token-comment {
   background: var(--bg-subtle);
   border-radius: 999px;
   padding: 0.02rem 0.4rem;
+}
+
+.phrase-index {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr));
+  gap: 0.65rem;
+  list-style: none;
+  padding: 0;
+  margin: 1.25rem 0 0;
+}
+
+.phrase-index li {
+  margin: 0;
+}
+
+.phrase-index a {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  height: 100%;
+  padding: 0.75rem 0.85rem;
+  background: var(--bg-elev);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text-muted);
+}
+
+.phrase-index a:hover {
+  color: var(--text);
+  border-color: var(--primary);
+  background: var(--primary-soft);
+  text-decoration: none;
+}
+
+.phrase-index code {
+  width: fit-content;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  font-size: 0.78rem;
+}
+
+.phrase-index span {
+  font-size: 0.85rem;
 }
 
 /* Offset anchored category sections below the sticky header. */

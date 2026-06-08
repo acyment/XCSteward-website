@@ -9,6 +9,8 @@ queries:
   - 'ios simulator booted but tests never start'
   - 'simulator boots but app does not launch'
   - 'xcodebuild test stuck after simulator boot'
+  - 'xcodebuild stuck waiting for test runner'
+  - 'xcodebuild hangs after Booted simulator'
   - 'simulator booted tests not running'
 category: readiness
 related:
@@ -18,7 +20,7 @@ related:
   - 'fastlane-scan-hangs-after-tests'
 order: 18
 featured: true
-updated: 2026-06-03
+updated: 2026-06-08
 ---
 
 ## Symptom

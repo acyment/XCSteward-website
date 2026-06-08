@@ -8,6 +8,8 @@ fitNote: 'Strong fit'
 queries:
   - 'CoreSimulatorService deadlock'
   - 'CoreSimulatorService not responding'
+  - 'com.apple.CoreSimulator.CoreSimulatorService hung'
+  - 'CoreSimulatorService connection invalid'
   - 'simulator subsystem hung macos'
   - 'CoreSimulator service stuck'
 category: lifecycle
@@ -18,7 +20,7 @@ related:
   - 'coding-agents-ios-simulator-tests'
 order: 32
 featured: true
-updated: 2026-06-03
+updated: 2026-06-08
 ---
 
 ## Symptom

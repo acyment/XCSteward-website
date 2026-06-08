@@ -44,7 +44,10 @@ export const GET: APIRoute = async ({ site }) => {
     lines.push(`## ${CATEGORY_META[cat].label}`);
     lines.push('');
     for (const e of inCat) {
-      lines.push(`- [${e.data.title}](${base}/failures/${e.id}/): ${e.data.symptom}`);
+      lines.push(
+        `- [${e.data.title}](${base}/failures/${e.id}/): ${e.data.symptom} ` +
+          `Searches: ${e.data.queries.join('; ')}`,
+      );
     }
     lines.push('');
   }

@@ -9,6 +9,8 @@ category: readiness
 queries:
   - 'unable to boot the simulator'
   - 'simctl unable to boot device'
+  - 'Unable to boot device in current state Booted'
+  - 'unable to boot device runtime bundle'
   - 'ios simulator stuck booting'
   - 'simulator will not boot macos'
 related:
@@ -16,7 +18,7 @@ related:
   - 'simulator-booted-tests-never-start'
   - 'unable-to-connect-to-simulator'
 order: 16
-updated: 2026-06-03
+updated: 2026-06-08
 ---
 
 ## Symptom

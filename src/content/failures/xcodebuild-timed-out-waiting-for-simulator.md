@@ -9,6 +9,8 @@ category: readiness
 queries:
   - 'xcodebuild timed out waiting for simulator'
   - 'timed out waiting for the simulator to boot'
+  - 'timed out waiting for simulator to be ready'
+  - 'xcodebuild failed to boot simulator timeout'
   - 'xcodebuild simulator boot timeout'
   - 'failed to background test runner timeout simulator'
 related:
@@ -16,7 +18,7 @@ related:
   - 'simulator-booted-tests-never-start'
   - 'xcodebuild-hangs-resolving-simulator-destination'
 order: 14
-updated: 2026-06-03
+updated: 2026-06-08
 ---
 
 ## Symptom

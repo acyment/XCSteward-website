@@ -28,6 +28,7 @@ export const GET: APIRoute = async ({ site }) => {
     out.push('');
     out.push(`URL: ${base}/failures/${e.id}/`);
     out.push(`Fit: ${e.data.fitNote} · Likely class: ${e.data.failureClass}`);
+    out.push(`Searches: ${e.data.queries.join('; ')}`);
     out.push('');
     out.push((e.body ?? '').trim());
     out.push('');

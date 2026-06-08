@@ -23,6 +23,28 @@ const related = data.related
   .filter((e): e is (typeof all)[number] => Boolean(e));
 
 const updated = data.updated.toISOString().slice(0, 10);
+const fitAnswer =
+  data.fit === 'strong'
+    ? 'This is a strong fit when the failure is operational: simulator readiness, destination resolution, CoreSimulator responsiveness, cleanup, timeouts, or local concurrency. XCSteward may help by making those phases bounded, serialized, and easier to inspect. It will not fix broken tests, code signing, missing runtimes, or vendor image bugs.'
+    : data.fit === 'partial'
+      ? 'This is a partial fit. XCSteward may help when the failure comes from execution readiness, destination selection, timeouts, cleanup, or contention. It probably will not help when the root cause is missing configuration, a broken runtime, a test-code bug, or a vendor image defect.'
+      : 'This is outside XCSteward\'s intended scope unless a separate simulator readiness or local execution issue is involved. XCSteward is not meant to fix broken tests, code signing, missing runtimes, or toolchain defects.';
+
+const faqItems = [
+  {
+    question: `What does "${data.title}" usually mean?`,
+    answer: `It usually points to ${data.failureClass}. ${data.symptom} Start by checking simulator readiness, destination selection, CoreSimulator/simctl responsiveness, and whether another xcodebuild, simctl, or Simulator process is already active before treating it as a test-code failure.`,
+  },
+  {
+    question: `Can XCSteward help with "${data.title}"?`,
+    answer: fitAnswer,
+  },
+  {
+    question: 'What should I check first?',
+    answer:
+      'Check whether xcrun simctl commands return promptly, whether xcodebuild can resolve a concrete simulator destination, whether the device is truly ready rather than merely Booted, and whether concurrent agents, scripts, or manual runs are touching the same simulator subsystem.',
+  },
+];
 
 // Structured data for answer engines: the article + its breadcrumb trail.
 const origin = (Astro.site ?? new URL('https://xcsteward.com')).origin;
@@ -33,12 +55,18 @@ const jsonLd = [
     '@type': 'TechArticle',
     headline: data.title,
     description: data.description,
+    articleSection: 'XCSteward failure modes',
+    keywords: data.queries.join(', '),
     datePublished: data.updated.toISOString(),
     dateModified: data.updated.toISOString(),
     url: pageUrl,
     mainEntityOfPage: pageUrl,
     author: { '@type': 'Organization', name: 'XCSteward', url: `${origin}/` },
     publisher: { '@type': 'Organization', name: 'XCSteward', url: `${origin}/` },
+    about: [
+      { '@type': 'Thing', name: data.failureClass },
+      ...data.queries.map((query) => ({ '@type': 'Thing', name: query })),
+    ],
   },
   {
     '@context': 'https://schema.org',
@@ -53,6 +81,18 @@ const jsonLd = [
       },
       { '@type': 'ListItem', position: 3, name: data.title, item: pageUrl },
     ],
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: faqItems.map((item) => ({
+      '@type': 'Question',
+      name: item.question,
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: item.answer,
+      },
+    })),
   },
 ];
 ---
@@ -76,10 +116,27 @@ const jsonLd = [
       <span>·</span>
       <span>Updated <time datetime={updated}>{updated}</time></span>
     </div>
+    <ul class="query-chips" aria-label="Search phrases covered by this page">
+      {data.queries.map((query) => <li>{query}</li>)}
+    </ul>
   </article>
 
   <div class="container prose failure-body">
     <Content />
+
+    <section aria-labelledby="faq-heading">
+      <h2 id="faq-heading">Common questions</h2>
+      <dl class="qa-list">
+        {
+          faqItems.map((item) => (
+            <>
+              <dt>{item.question}</dt>
+              <dd>{item.answer}</dd>
+            </>
+          ))
+        }
+      </dl>
+    </section>
 
     {
       related.length > 0 && (

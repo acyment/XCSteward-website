@@ -9,14 +9,16 @@ category: lifecycle
 queries:
   - 'unable to connect to simulator'
   - 'lost connection to test manager simulator'
+  - 'Lost connection to the test manager service'
   - 'test runner never connects simulator'
+  - 'xcodebuild test runner never attaches'
   - 'could not connect to simulator xcodebuild'
 related:
   - 'simulator-booted-tests-never-start'
   - 'coresimulatorservice-deadlock'
   - 'simctl-commands-not-responding'
 order: 34
-updated: 2026-06-03
+updated: 2026-06-08
 ---
 
 ## Symptom
