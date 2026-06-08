@@ -896,10 +896,10 @@ pre .token-comment {
   margin-bottom: 0;
 }
 
-.mcp-callout__more {
-  margin-top: 1rem;
+/* Discoverability link to the /why/ origin story, under "Why this exists". */
+.origin-link {
+  margin-top: 1.25rem;
   font-weight: 600;
-  font-size: 0.95rem;
 }
 
 /* ---- Alpha-section credibility lines ---- */
