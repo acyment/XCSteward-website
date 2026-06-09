@@ -18,7 +18,7 @@ related:
   - 'multiple-xcodebuild-processes-same-mac'
   - 'xcodebuild-timed-out-waiting-for-simulator'
 order: 92
-updated: 2026-06-08
+updated: 2026-06-09
 ---
 
 ## Symptom
@@ -35,7 +35,7 @@ failures are hard to reproduce by hand.
   first is still wedged — compounding the contention.
 - Multiple agents (or an agent plus your manual run) touch simulators at once.
 - The agent scrapes long, ambiguous output and cannot tell "still booting" from
-  "stuck". 
+  "stuck".
 - Failures spike when the Mac is busy and vanish when it is idle.
 
 ## Why it happens / likely failure classes
@@ -55,6 +55,8 @@ about:
 - **Single-run fragility too.** Even one agent on an idle Mac hits boot,
   resolution, and readiness stalls — concurrency just amplifies it.
 - **Output scraping** instead of a structured result makes timeouts ambiguous.
+- **Missing job ownership context** makes it harder to tell which agent, task,
+  or retry produced a given run and artifact set.
 
 ## Quick checks
 
@@ -91,6 +93,8 @@ is coordination and retries, not your tests.
   rather than launching another run on a wedged subsystem.
 - **Give the agent a structured pass/fail signal** instead of having it scrape
   console output.
+- **Attach ownership hints** when your runner supports it, so retries and
+  artifacts can be tied back to a task.
 
 ## When XCSteward may help
 
@@ -100,6 +104,13 @@ This is one of the situations XCSteward is most directly designed for:
   serialized instead of colliding with each other or with you.
 - A **stable CLI contract with structured results**, so an agent gets a clear
   pass/fail/timeout instead of scraping walls of text.
+- **Agent-friendly discovery and setup** through `projects --json`,
+  `profile show <name> --json`, and `profile init --detect --json`.
+- **Streaming machine progress** with `--progress` on long JSON waits, and
+  `status <job-id> --watch --json` when the agent wants newline-delimited full
+  `JobSummary` updates.
+- **Bounded diagnosis** through `explain <job-id> --json`, plus metadata and
+  labels from `submit --metadata key=value` and `--label`.
 - **Readiness checks, bounded timeouts, and deterministic recovery** so a wedged
   run fails fast and the next attempt starts clean.
 - **Isolated artifacts** per run so concurrent attempts do not corrupt each
@@ -113,5 +124,7 @@ iOS test runs.
 - It does not make a **flaky or genuinely broken test** pass — it makes
   execution more predictable, not the test logic correct.
 - It is **not an agent framework** and does not change how your agent decides to
-  retry; it gives those runs a safer lane to execute in.
+  retry; the reusable generic skill under
+  `Examples/agents/skills/xcsteward/` is guidance for using the CLI contract,
+  not a new protocol layer.
 - It does not address code signing, missing runtimes, or vendor image bugs.

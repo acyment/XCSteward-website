@@ -18,7 +18,7 @@ related:
   - 'simctl-commands-not-responding'
 order: 90
 featured: true
-updated: 2026-06-03
+updated: 2026-06-09
 ---
 
 ## Symptom
@@ -122,6 +122,14 @@ This is the central use case XCSteward is designed for:
 - **Readiness checks, timeouts, and deterministic cleanup** so one bad run does
   not poison the next.
 - **Isolated artifacts** per run so logs and result bundles never collide.
+- **Human-visible monitoring** for long runs: plain `submit --wait` prints the
+  queued job id, job directory, watch/follow commands, and compact updates;
+  `status <job-id> --watch` and `logs <job-id> --follow` let a human keep
+  observing an existing job.
+- **A JSON contract for agents**, including `projects --json`,
+  `profile show <name> --json`, `profile init --detect --json`,
+  `status <job-id> --watch --json` as newline-delimited `JobSummary` objects,
+  `explain <job-id> --json`, `--progress`, `--metadata`, and `--label`.
 
 If your pain shows up specifically when agents share a Mac, this is the class of
 failure XCSteward most wants to be tested against.

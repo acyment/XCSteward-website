@@ -18,7 +18,7 @@ related:
   - 'simulator-booted-tests-never-start'
   - 'unable-to-connect-to-simulator'
 order: 16
-updated: 2026-06-08
+updated: 2026-06-09
 ---
 
 ## Symptom
@@ -112,12 +112,15 @@ targets:
 
 - A **deterministic boot step with readiness verification** (wait for `Booted`,
   confirm the device responds) before handing off, instead of an implicit boot
-  that may fail silently.
+  that may fail without useful context.
 - **Timeouts and recovery** so a device that will not boot is shut down/erased
   and retried, rather than leaving a half-booted device behind.
 - A **single execution lane** so two runs do not try to boot the same device at
   once.
 - **Cleanup between runs** so an interrupted boot does not poison the next one.
+- **Watch/follow commands** so a long boot or cleanup phase can stay visible to
+  a human, while agents keep using `--json`, `--progress`, and
+  `explain <job-id> --json`.
 
 A strong candidate to test against this class of failure.
 

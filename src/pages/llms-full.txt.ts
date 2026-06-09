@@ -1,6 +1,7 @@
 import type { APIRoute } from 'astro';
 import { getCollection } from 'astro:content';
 import { SITE } from '../config';
+import { HUMAN_CLI_EXAMPLE, AGENT_CLI_EXAMPLE } from '../lib/site-content';
 
 /**
  * /llms-full.txt — the full Markdown of every failure-mode page, concatenated,
@@ -19,6 +20,37 @@ export const GET: APIRoute = async ({ site }) => {
   out.push(`> ${SITE.description}`);
   out.push('');
   out.push(`Source: ${base}/  ·  Repo: ${SITE.repo}`);
+  out.push('');
+  out.push('## Current CLI guidance for agents and humans');
+  out.push('');
+  out.push(
+    'XCSteward is a local CLI and JSON contract, not a dashboard, SaaS, MCP layer, or hosted service.',
+  );
+  out.push('');
+  out.push(
+    'Human UX: plain `submit --wait` prints the queued job id, status/log/watch/follow commands, job directory, and compact wait updates. `status <job-id> --watch` polls until the job is terminal. `logs <job-id> --follow` streams the combined log until terminal.',
+  );
+  out.push('');
+  out.push('```bash');
+  out.push(HUMAN_CLI_EXAMPLE);
+  out.push('```');
+  out.push('');
+  out.push(
+    'Machine contract: agents and automation should keep using `--json`, parse stdout, and branch on `state`, `result_class`, and exit code. Long-running JSON waits can add `--progress` for JSON-lines events on stderr. `status <job-id> --watch --json` emits newline-delimited full `JobSummary` objects on stdout.',
+  );
+  out.push('');
+  out.push('```bash');
+  out.push(AGENT_CLI_EXAMPLE);
+  out.push('```');
+  out.push('');
+  out.push(
+    'Useful agent commands: `projects --json`, `profile show <name> --json`, `profile init --detect --json`, `explain <job-id> --json`, repeatable `submit --metadata key=value`, `--label`, and `cleanup --caches`.',
+  );
+  out.push('');
+  out.push(
+    `Reusable generic agent skill: ${SITE.repo}/blob/main/Examples/agents/skills/xcsteward/SKILL.md`,
+  );
+  out.push(`Authoritative JSON contract: ${SITE.repo}/blob/main/CONTRACT.md`);
   out.push('');
   out.push('---');
   out.push('');

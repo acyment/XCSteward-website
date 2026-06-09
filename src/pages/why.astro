@@ -161,10 +161,10 @@ const aboutLd = {
       </p>
       <p class="mcp-callout__kicker">
         XCSteward coordinates what happens <em>after</em> a run is requested.
-        It does not by itself lease devices, isolate DerivedData and artifacts,
-        preserve logs, serialize competing runs, or clean up broken state —
-        which is exactly the gap XCSteward fills, sitting underneath your MCP,
-        shell, and hooks rather than competing with them.
+        The invocation path does not by itself lease devices, isolate DerivedData
+        and artifacts, preserve logs, serialize competing runs, or clean up
+        broken state. That is the gap XCSteward fills, sitting underneath your
+        MCP, shell, and hooks rather than competing with them.
       </p>
     </aside>
   </section>
@@ -189,6 +189,14 @@ const aboutLd = {
       Plus structured output — JSON and durable artifacts — so both a human and
       an agent can tell what happened, instead of scraping a scrollback buffer
       that may already be gone.
+    </p>
+    <p>
+      The current CLI keeps those audiences separate. Humans can use
+      <code>submit --wait</code>, <code>status --watch</code>, and
+      <code>logs --follow</code> for compact job context and live observation.
+      Agents and automation should keep using <code>--json</code>, add
+      <code>--progress</code> for long waits when useful, and branch on the JSON
+      contract rather than human text.
     </p>
   </section>
 

@@ -83,17 +83,30 @@ export const HELPS: { title: string; body: string }[] = [
   },
   {
     title: 'Isolated artifacts',
-    body: 'Per-run DerivedData, result bundles, and logs, so runs do not overwrite each other.',
+    body: 'Per-run DerivedData, result bundles, logs, and structured summaries, so runs do not overwrite each other.',
   },
   {
     title: 'Timeouts and cleanup',
     body: 'Bound each phase so a wedge becomes a fast, legible failure, and tear down devices and processes deterministically afterward.',
   },
   {
-    title: 'Guardrails around concurrency',
-    body: 'Stop unsafe simultaneous Xcode/Simulator activity from deadlocking CoreSimulator in the first place.',
+    title: 'Observable CLI runs',
+    body: 'Plain waits print the job id, job directory, watch/follow commands, and compact progress instead of disappearing into a silent command.',
+  },
+  {
+    title: 'A JSON contract for automation',
+    body: 'Agents and scripts can use JSON summaries, progress events, profile discovery, metadata, and bounded explanations instead of scraping human text.',
   },
 ];
+
+/** Concise examples used by human-facing pages and machine-readable guidance. */
+export const HUMAN_CLI_EXAMPLE = `xcsteward submit --project app --wait --wait-timeout 900
+xcsteward status <job-id> --watch
+xcsteward logs <job-id> --follow`;
+
+export const AGENT_CLI_EXAMPLE = `xcsteward profile init --detect --json
+xcsteward submit --project app --wait --wait-timeout 900 --json --progress
+xcsteward explain <job-id> --json`;
 
 /** The feedback that is most valuable for the alpha. */
 export const VALUABLE_FEEDBACK: string[] = [

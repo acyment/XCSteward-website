@@ -16,7 +16,7 @@ related:
   - 'fastlane-scan-parallel-testing-hang'
   - 'deriveddata-contamination-between-ios-test-runs'
 order: 54
-updated: 2026-06-03
+updated: 2026-06-09
 ---
 
 ## Symptom
@@ -100,6 +100,13 @@ Coordinating concurrent work on one Mac is a core design goal:
   CoreSimulator at once.
 - **Isolated artifacts** and **deterministic cleanup** so overlapping runs do
   not corrupt each other.
+- **Legible wait and monitoring commands** for humans: `submit --wait` prints
+  the job id, status/log/watch/follow commands, job directory, and compact
+  updates; `status <job-id> --watch` polls until terminal; `logs --follow`
+  streams the combined log.
+- **Structured summaries for scripts and agents** through `--json`,
+  `--progress`, `status <job-id> --watch --json`, `explain <job-id> --json`,
+  metadata, and labels.
 
 A strong candidate to test against this class of failure.
 

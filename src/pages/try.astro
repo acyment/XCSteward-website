@@ -4,7 +4,13 @@ import FitList from '../components/FitList.astro';
 import Button from '../components/Button.astro';
 import ReportFailure from '../components/ReportFailure.astro';
 import { SITE } from '../config';
-import { GOOD_FIT, NOT_FIT, VALUABLE_FEEDBACK } from '../lib/site-content';
+import {
+  GOOD_FIT,
+  NOT_FIT,
+  VALUABLE_FEEDBACK,
+  HUMAN_CLI_EXAMPLE,
+  AGENT_CLI_EXAMPLE,
+} from '../lib/site-content';
 
 const title = 'Try the XCSteward OSS alpha';
 const description =
@@ -33,6 +39,47 @@ const description =
       Mac — there is no signup, no waitlist, and no account. The honest deal: it
       is most useful if you can point it at a real, reproducible failure rather
       than try it out of curiosity.
+    </p>
+  </section>
+
+  <section class="container prose" aria-labelledby="workflow-heading">
+    <h2 id="workflow-heading">Current CLI workflow</h2>
+    <p>
+      Install the CLI locally, create or inspect a project profile, then run
+      through the human or machine path. XCSteward's product surface is the CLI
+      and its JSON contract; there is no hosted service or dashboard involved.
+    </p>
+
+    <pre><code><span class="token-comment"># requires macOS with a recent local Xcode</span>
+brew tap acyment/tap
+brew install xcsteward
+xcsteward profile init --detect --json</code></pre>
+
+    <h3>Human path</h3>
+    <p>
+      A plain wait prints the queued job id, status/log/watch/follow commands,
+      job directory, and compact updates. Use watch or follow from another
+      terminal when you want to keep observing an existing job.
+    </p>
+    <pre><code>{HUMAN_CLI_EXAMPLE}</code></pre>
+
+    <h3>Agent path</h3>
+    <p>
+      Agents and scripts should parse JSON from stdout and ignore human text.
+      Add <code>--progress</code> to long-running JSON waits when stderr JSON
+      events are useful, then use <code>explain --json</code> for bounded triage
+      before opening raw logs.
+    </p>
+    <pre><code>{AGENT_CLI_EXAMPLE}</code></pre>
+
+    <p>
+      Useful supporting commands include <code>projects --json</code>,
+      <code>profile show &lt;name&gt; --json</code>,
+      <code>status &lt;job-id&gt; --watch --json</code> for newline-delimited
+      <code>JobSummary</code> updates, repeatable
+      <code>submit --metadata key=value</code> plus <code>--label</code>, and
+      <code>cleanup --caches</code> for XCSteward-owned cache and retained
+      evidence cleanup.
     </p>
   </section>
 

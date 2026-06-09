@@ -1,7 +1,12 @@
 import type { APIRoute } from 'astro';
 import { getCollection } from 'astro:content';
 import { SITE } from '../config';
-import { CATEGORY_META, CATEGORY_ORDER } from '../lib/site-content';
+import {
+  CATEGORY_META,
+  CATEGORY_ORDER,
+  HUMAN_CLI_EXAMPLE,
+  AGENT_CLI_EXAMPLE,
+} from '../lib/site-content';
 import type { Category } from '../content.config';
 
 /**
@@ -28,6 +33,44 @@ export const GET: APIRoute = async ({ site }) => {
       'scripts, and local CI-like workflows on one Mac amplify it. It is not a ' +
       'generic "fix XCTest flakiness" tool, and does not address broken tests, code ' +
       'signing, missing runtimes, or vendor image bugs.',
+  );
+  lines.push('');
+  lines.push('## Current CLI guidance');
+  lines.push('');
+  lines.push(
+    '- Humans: `submit --wait` prints the queued job id, status/log/watch/follow ' +
+      'commands, job directory, and compact wait updates. `status <job-id> --watch` ' +
+      'polls until terminal. `logs <job-id> --follow` streams the combined log until ' +
+      'the job is terminal.',
+  );
+  lines.push('- Human path:');
+  lines.push('');
+  lines.push('```bash');
+  lines.push(HUMAN_CLI_EXAMPLE);
+  lines.push('```');
+  lines.push('');
+  lines.push(
+    '- Agents and automation: always prefer `--json`; parse stdout and do not ' +
+      'scrape human text. For long-running JSON waits, add `--progress` to receive ' +
+      'JSON-lines events on stderr. `status <job-id> --watch --json` emits ' +
+      'newline-delimited full `JobSummary` objects on stdout.',
+  );
+  lines.push('- Agent path:');
+  lines.push('');
+  lines.push('```bash');
+  lines.push(AGENT_CLI_EXAMPLE);
+  lines.push('```');
+  lines.push('');
+  lines.push(
+    '- Agent DevX: use `projects --json`, `profile show <name> --json`, ' +
+      '`profile init --detect --json`, `explain <job-id> --json`, repeatable ' +
+      '`submit --metadata key=value`, `--label`, and `cleanup --caches` as needed.',
+  );
+  lines.push(
+    `- Reusable generic agent skill: ${SITE.repo}/blob/main/Examples/agents/skills/xcsteward/SKILL.md`,
+  );
+  lines.push(
+    `- Authoritative JSON contract: ${SITE.repo}/blob/main/CONTRACT.md`,
   );
   lines.push('');
   lines.push('## Key pages');

@@ -8,7 +8,13 @@ import FitList from '../components/FitList.astro';
 import Callout from '../components/Callout.astro';
 import Cta from '../components/Cta.astro';
 import { SITE } from '../config';
-import { GOOD_FIT, NOT_FIT, HELPS } from '../lib/site-content';
+import {
+  GOOD_FIT,
+  NOT_FIT,
+  HELPS,
+  HUMAN_CLI_EXAMPLE,
+  AGENT_CLI_EXAMPLE,
+} from '../lib/site-content';
 
 const allFailures = await getCollection('failures', ({ data }) => !data.draft);
 // The landing shows a curated, featured subset; the full set lives at /failures/.
@@ -147,6 +153,56 @@ const softwareLd = {
           </li>
         ))
       }
+    </ul>
+  </section>
+
+  <!-- 6. CURRENT DEVELOPER EXPERIENCE -->
+  <section class="container prose" aria-labelledby="devx-heading">
+    <h2 id="devx-heading">Human UX, machine contract</h2>
+    <p>
+      XCSteward is a local CLI, not a dashboard, SaaS, or MCP layer. The current
+      developer experience has two surfaces: compact human output for watching
+      long runs, and a JSON contract for agents and automation.
+    </p>
+
+    <h3>For humans</h3>
+    <p>
+      Plain <code>submit --wait</code> is no longer a silent black box. It prints
+      the queued job id, status/log/watch/follow commands, job directory, and
+      compact wait updates. From another terminal, <code>status --watch</code>
+      polls until the job is terminal and <code>logs --follow</code> streams the
+      combined log until completion.
+    </p>
+    <pre><code>{HUMAN_CLI_EXAMPLE}</code></pre>
+
+    <h3>For agents and automation</h3>
+    <p>
+      Machine users should keep using <code>--json</code>. Long-running JSON
+      waits can add <code>--progress</code> for JSON-lines events on stderr while
+      stdout stays reserved for the final JSON document. For streaming status,
+      <code>status &lt;job-id&gt; --watch --json</code> emits newline-delimited
+      full <code>JobSummary</code> objects.
+    </p>
+    <pre><code>{AGENT_CLI_EXAMPLE}</code></pre>
+    <ul class="feature-list">
+      <li>
+        Discover configured profiles with <code>projects --json</code> and
+        inspect one with <code>profile show &lt;name&gt; --json</code>.
+      </li>
+      <li>
+        Bootstrap a detectable repo with
+        <code>profile init --detect --json</code> and follow its
+        <code>next_commands</code>.
+      </li>
+      <li>
+        Preserve ownership hints with repeatable
+        <code>submit --metadata key=value</code> and <code>--label</code>.
+      </li>
+      <li>
+        Prefer <code>explain &lt;job-id&gt; --json</code> for bounded triage
+        before opening raw logs; use <code>cleanup --caches</code> for
+        XCSteward-owned cache and retained evidence cleanup.
+      </li>
     </ul>
   </section>
 

@@ -18,7 +18,7 @@ related:
   - 'deriveddata-contamination-between-ios-test-runs'
 order: 56
 featured: true
-updated: 2026-06-03
+updated: 2026-06-09
 ---
 
 ## Symptom
@@ -115,6 +115,13 @@ actually live:
 - A **single execution lane** so parallel runs are not fighting over
   CoreSimulator during teardown.
 - **Isolated artifacts** per run so result bundles do not collide.
+- **Human-visible monitoring** while a long run is quiet: `submit --wait` prints
+  compact updates and the follow/watch commands, `status --watch` keeps polling
+  until terminal, and `logs --follow` streams the combined log instead of
+  leaving the terminal silent.
+- **Bounded diagnosis** after the job through `explain <job-id> --json` and
+  artifact paths, which can help separate simulator cleanup trouble from
+  `scan`'s own report generation.
 
 It is worth testing against this class of failure when the hang is in simulator
 shutdown or process cleanup.

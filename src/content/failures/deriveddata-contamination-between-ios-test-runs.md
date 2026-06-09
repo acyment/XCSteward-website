@@ -16,7 +16,7 @@ related:
   - 'simulator-fails-after-previous-run'
   - 'fastlane-scan-hangs-after-tests'
 order: 50
-updated: 2026-06-03
+updated: 2026-06-09
 ---
 
 ## Symptom
@@ -90,6 +90,11 @@ Per-run isolation of artifacts is one of XCSteward's core design goals:
 - A **single execution lane / queue** so concurrent runs do not contend for
   shared build state in the first place.
 - **Deterministic cleanup** of per-run directories after a job completes.
+- **Inspectable job evidence** through `status`, `logs`, `artifacts`, and
+  `explain --json`, so a human or agent can identify the exact run and artifact
+  paths before drawing conclusions from stale output.
+- **Ownership metadata** through repeatable `submit --metadata key=value` and
+  `--label`, which can make agent-created artifact sets easier to attribute.
 
 A strong candidate to test against this class of failure, particularly when
 several runs share one Mac.

@@ -20,7 +20,7 @@ related:
   - 'simulator-booted-tests-never-start'
 order: 10
 featured: true
-updated: 2026-06-08
+updated: 2026-06-09
 ---
 
 ## Symptom
@@ -133,6 +133,9 @@ This is one of the failure classes XCSteward is designed for. It can:
   blocking your terminal or CI-like job indefinitely.
 - Provide a **single execution lane** so two runs do not collide inside
   CoreSimulator and turn a slow resolution into a deadlock.
+- Make a long wait **observable**: plain `submit --wait` prints the job id,
+  status/log/watch/follow commands, job directory, and compact updates; agents
+  can keep using `--json`, `--progress`, and `status <job-id> --watch --json`.
 
 It is worth testing against this class of failure if your hangs happen *before*
 tests start.

@@ -18,7 +18,7 @@ related:
   - 'simulator-booted-tests-never-start'
   - 'xcodebuild-hangs-resolving-simulator-destination'
 order: 14
-updated: 2026-06-08
+updated: 2026-06-09
 ---
 
 ## Symptom
@@ -100,6 +100,9 @@ Bounding and verifying the boot/readiness window is a core design goal:
   activity, which is a common reason readiness misses the deadline.
 - Clear **timeouts with recovery** so a device that truly will not boot fails
   fast and is reset, instead of repeatedly timing out mid-run.
+- Compact **wait/watch output** for humans, plus `--json`, `--progress`,
+  `status <job-id> --watch --json`, and `explain <job-id> --json` for agents
+  that need a stable outcome and evidence path.
 
 Worth testing against this class of failure, especially if timeouts cluster
 under load or after cold starts.
