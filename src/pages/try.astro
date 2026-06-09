@@ -10,6 +10,7 @@ import {
   VALUABLE_FEEDBACK,
   HUMAN_CLI_EXAMPLE,
   AGENT_CLI_EXAMPLE,
+  FAILURE_INSPECTION_EXAMPLE,
 } from '../lib/site-content';
 
 const title = 'Try the XCSteward OSS alpha';
@@ -67,8 +68,9 @@ xcsteward profile init --detect --json</code></pre>
     <p>
       Agents and scripts should parse JSON from stdout and ignore human text.
       Add <code>--progress</code> to long-running JSON waits when stderr JSON
-      events are useful, then use <code>explain --json</code> for bounded triage
-      before opening raw logs.
+      events are useful; when command events are available those progress lines
+      add <code>phase</code> and <code>phase_elapsed_seconds</code>. Then use
+      <code>explain --json</code> for bounded triage before opening raw logs.
     </p>
     <pre><code>{AGENT_CLI_EXAMPLE}</code></pre>
 
@@ -77,9 +79,41 @@ xcsteward profile init --detect --json</code></pre>
       <code>profile show &lt;name&gt; --json</code>,
       <code>status &lt;job-id&gt; --watch --json</code> for newline-delimited
       <code>JobSummary</code> updates, repeatable
-      <code>submit --metadata key=value</code> plus <code>--label</code>, and
+      <code>submit --metadata key=value</code> plus <code>--label</code>,
+      repeatable <code>submit --env KEY=VALUE</code> for per-run
+      <code>xcodebuild</code> environment injection, and
       <code>cleanup --caches</code> for XCSteward-owned cache and retained
-      evidence cleanup.
+      evidence cleanup. XCSteward records env override keys, not sensitive
+      values.
+    </p>
+
+    <h3>Failure inspection</h3>
+    <p>
+      If build succeeds but the test runner never really starts, XCSteward treats
+      the outcome as environment/bootstrap failure rather than real test
+      execution failure. <code>runner_bootstrap_failure</code> means runner or
+      environment setup failed before XCTest attached; inspect the summary first,
+      then use <code>explain --json</code> before opening raw logs.
+    </p>
+    <p>
+      If the test command hits its timeout before XCSteward observes XCTest
+      attach evidence, the subtype is
+      <code>pre_xctest_timeout</code>: the command timed out before XCSteward
+      observed real test execution. That stays a runner/bootstrap diagnosis, not
+      a timed-out test case.
+    </p>
+    <pre><code>{FAILURE_INSPECTION_EXAMPLE}</code></pre>
+    <p>
+      When a job is queued or still in simulator/bootstrap setup, the combined
+      log may not exist yet. In that case <code>logs &lt;job-id&gt;</code> reports
+      that it is pending and points back to
+      <code>status &lt;job-id&gt; --watch</code>.
+    </p>
+    <p>
+      <code>doctor</code> still keeps project preflight bounded. If
+      <code>.xctestrun</code> integrity checking times out during a cold or long
+      build, the warning now says no compiler error was observed before timeout,
+      which is clearer diagnosis, not an invitation to wait forever.
     </p>
   </section>
 

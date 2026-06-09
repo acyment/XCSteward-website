@@ -18,7 +18,7 @@ related:
   - 'coresimulatorservice-deadlock'
   - 'simctl-commands-not-responding'
 order: 34
-updated: 2026-06-08
+updated: 2026-06-09
 ---
 
 ## Symptom
@@ -34,6 +34,8 @@ partway through bringing up the tests.
 - The app may install and even launch, but the test session never establishes.
 - The device shows `Booted`, which makes it look like a test problem rather than
   a connection one.
+- You see testmanagerd connection loss before XCTest attaches, so the run never
+  reaches real test execution.
 - Re-running sometimes connects; under load it fails more often.
 
 ## Why it happens / likely failure classes
@@ -51,6 +53,11 @@ not connect:
 - **Contention.** Another run or `simctl` operation on the same device disrupts
   the connection handshake.
 - **Device in a half-booted / inconsistent state** after an interrupted run.
+
+XCSteward treats connection failures before XCTest attaches as
+`runner_bootstrap_failure`: runner or environment setup failed before XCTest
+attached. That keeps testmanagerd or launch-session failures separate from
+actual test assertions and app-code regressions.
 
 ## Quick checks
 
@@ -101,6 +108,14 @@ readiness model targets:
 - A **single execution lane** so no other run disrupts the connection handshake.
 - **Timeouts and clean teardown** so a stale or failed connection is reset
   rather than left to interfere with the next run.
+- **Structured inspection** through `status <job-id> --watch`,
+  `explain <job-id> --json`, and `logs <job-id>`, so humans and agents can see
+  whether the runner failed before XCTest attached. If the combined log is still
+  pending during queued/bootstrap setup, `logs <job-id>` points back to
+  `status <job-id> --watch` instead of failing as an opaque missing file.
+- If the wait eventually times out before XCSteward observes XCTest attach/test
+  execution evidence, the subtype is `pre_xctest_timeout` rather than a plain
+  timed-out test case.
 
 Worth testing against this class of failure when the connection problem tracks
 with device readiness or contention rather than your test code.

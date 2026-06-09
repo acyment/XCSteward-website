@@ -6,6 +6,7 @@ import {
   CATEGORY_ORDER,
   HUMAN_CLI_EXAMPLE,
   AGENT_CLI_EXAMPLE,
+  FAILURE_INSPECTION_EXAMPLE,
 } from '../lib/site-content';
 import type { Category } from '../content.config';
 
@@ -39,9 +40,9 @@ export const GET: APIRoute = async ({ site }) => {
   lines.push('');
   lines.push(
     '- Humans: `submit --wait` prints the queued job id, status/log/watch/follow ' +
-      'commands, job directory, and compact wait updates. `status <job-id> --watch` ' +
-      'polls until terminal. `logs <job-id> --follow` streams the combined log until ' +
-      'the job is terminal.',
+      'commands, job directory, and compact wait updates. `status <job-id> --watch ' +
+      '[--interval <seconds>]` polls until terminal. `logs <job-id> --follow` ' +
+      'streams the combined log until the job is terminal.',
   );
   lines.push('- Human path:');
   lines.push('');
@@ -52,8 +53,9 @@ export const GET: APIRoute = async ({ site }) => {
   lines.push(
     '- Agents and automation: always prefer `--json`; parse stdout and do not ' +
       'scrape human text. For long-running JSON waits, add `--progress` to receive ' +
-      'JSON-lines events on stderr. `status <job-id> --watch --json` emits ' +
-      'newline-delimited full `JobSummary` objects on stdout.',
+      'JSON-lines events on stderr. When command events are available, progress ' +
+      'events add `phase` and `phase_elapsed_seconds`. `status <job-id> --watch ' +
+      '--json` emits newline-delimited full `JobSummary` objects on stdout.',
   );
   lines.push('- Agent path:');
   lines.push('');
@@ -64,8 +66,40 @@ export const GET: APIRoute = async ({ site }) => {
   lines.push(
     '- Agent DevX: use `projects --json`, `profile show <name> --json`, ' +
       '`profile init --detect --json`, `explain <job-id> --json`, repeatable ' +
-      '`submit --metadata key=value`, `--label`, and `cleanup --caches` as needed.',
+      '`submit --metadata key=value`, `--label`, repeatable `submit --env ' +
+      'KEY=VALUE`, and `cleanup --caches` as needed. Env overrides apply to that ' +
+      "job's `xcodebuild` invocation only, and XCSteward records override keys, " +
+      'not sensitive values.',
   );
+  lines.push(
+    '- Bootstrap diagnosis: `runner_bootstrap_failure` means runner or environment ' +
+      'setup failed before XCTest attached. XCSteward classifies pre-XCTest ' +
+      'CoreSimulator, destination, launch session, artifact, or runner setup ' +
+      'failures separately from real test failures and preserves the underlying detail.',
+  );
+  lines.push(
+    '- Timeout-before-attach diagnosis: `pre_xctest_timeout` means the test ' +
+      'command hit its timeout before XCSteward observed XCTest attach/test ' +
+      'execution evidence. The summary says `XCTest did not attach before the ' +
+      'test command timed out`, and terminal JSON may include phase, timeout ' +
+      'seconds, evidence paths, and a capped diagnostic excerpt.',
+  );
+  lines.push(
+    '- Pending logs: when a queued/bootstrap job has no `logs/combined.log` yet, ' +
+      '`logs <job-id>` reports that the combined log is pending and points back to ' +
+      '`status <job-id> --watch`.',
+  );
+  lines.push(
+    '- Doctor preflight stays bounded: if `.xctestrun` integrity checking times ' +
+      'out during a cold or long build, the warning now says no compiler error ' +
+      'was observed before timeout rather than implying an unlimited wait.',
+  );
+  lines.push('- Failure inspection path:');
+  lines.push('');
+  lines.push('```bash');
+  lines.push(FAILURE_INSPECTION_EXAMPLE);
+  lines.push('```');
+  lines.push('');
   lines.push(
     `- Reusable generic agent skill: ${SITE.repo}/blob/main/Examples/agents/skills/xcsteward/SKILL.md`,
   );

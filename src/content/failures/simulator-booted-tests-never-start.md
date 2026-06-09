@@ -20,7 +20,7 @@ related:
   - 'fastlane-scan-hangs-after-tests'
 order: 18
 featured: true
-updated: 2026-06-08
+updated: 2026-06-09
 ---
 
 ## Symptom
@@ -39,6 +39,11 @@ as booted and then just waits.
 - First run after boot is worst; a warm device is sometimes fine.
 - It feels like the device "isn't really ready" even though it says it is.
 
+In XCSteward terms, a run that builds successfully but never really starts the
+test runner may be reported as `runner_bootstrap_failure`: runner or environment
+setup failed before XCTest attached. That is intentionally separate from
+`test_failure`, because the failure happened before real test execution.
+
 ## Why it happens / likely failure classes
 
 `Booted` is not the same as **ready to run tests**. There is a window after boot
@@ -51,6 +56,9 @@ where the simulator is still bringing up services. Stalls here usually come from
   [CoreSimulatorService deadlock](/failures/coresimulatorservice-deadlock/).
 - **The app launches but the test host never attaches** — the runner waits for a
   connection that does not come.
+- **Runner/bootstrap setup failed before XCTest attached.** This can include a
+  destination, launch session, testmanagerd connection, artifact, or runner
+  setup problem, not just a broken simulator.
 - **A modal/system prompt or first-launch dialog** blocks the UI on a fresh
   device.
 - **Concurrency.** Another run or `simctl` call installing/launching on the same
@@ -111,6 +119,14 @@ readiness model is designed for:
   fails fast instead of hanging.
 - **Timeouts** on the install/launch/attach phase, turning an open-ended stall
   into a recoverable failure.
+- **Explicit pre-test classification**: `submit --wait`, `status`, and
+  `explain <job-id> --json` can report that the run failed before XCTest
+  attached, preserve the CoreSimulator / runner detail, and suggest a bounded
+  next step instead of making a human or agent infer it from silence.
+- **Timeout-before-attach detail**: if the test command times out before
+  XCSteward observes XCTest attach/test execution evidence, the subtype is
+  `pre_xctest_timeout`, and the summary says `XCTest did not attach before the
+  test command timed out`.
 - A **single execution lane** so no other run is installing or launching on the
   same device concurrently.
 - **Deterministic boot + warm-up** as part of the run, instead of relying on

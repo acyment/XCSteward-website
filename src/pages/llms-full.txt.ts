@@ -1,7 +1,11 @@
 import type { APIRoute } from 'astro';
 import { getCollection } from 'astro:content';
 import { SITE } from '../config';
-import { HUMAN_CLI_EXAMPLE, AGENT_CLI_EXAMPLE } from '../lib/site-content';
+import {
+  HUMAN_CLI_EXAMPLE,
+  AGENT_CLI_EXAMPLE,
+  FAILURE_INSPECTION_EXAMPLE,
+} from '../lib/site-content';
 
 /**
  * /llms-full.txt — the full Markdown of every failure-mode page, concatenated,
@@ -28,7 +32,7 @@ export const GET: APIRoute = async ({ site }) => {
   );
   out.push('');
   out.push(
-    'Human UX: plain `submit --wait` prints the queued job id, status/log/watch/follow commands, job directory, and compact wait updates. `status <job-id> --watch` polls until the job is terminal. `logs <job-id> --follow` streams the combined log until terminal.',
+    'Human UX: plain `submit --wait` prints the queued job id, status/log/watch/follow commands, job directory, and compact wait updates. `status <job-id> --watch [--interval <seconds>]` polls until the job is terminal. `logs <job-id> --follow` streams the combined log until terminal.',
   );
   out.push('');
   out.push('```bash');
@@ -36,7 +40,7 @@ export const GET: APIRoute = async ({ site }) => {
   out.push('```');
   out.push('');
   out.push(
-    'Machine contract: agents and automation should keep using `--json`, parse stdout, and branch on `state`, `result_class`, and exit code. Long-running JSON waits can add `--progress` for JSON-lines events on stderr. `status <job-id> --watch --json` emits newline-delimited full `JobSummary` objects on stdout.',
+    'Machine contract: agents and automation should keep using `--json`, parse stdout, and branch on `state`, `result_class`, and exit code. Long-running JSON waits can add `--progress` for JSON-lines events on stderr. When command events are available, progress events add `phase` and `phase_elapsed_seconds`. `status <job-id> --watch --json` emits newline-delimited full `JobSummary` objects on stdout.',
   );
   out.push('');
   out.push('```bash');
@@ -44,7 +48,31 @@ export const GET: APIRoute = async ({ site }) => {
   out.push('```');
   out.push('');
   out.push(
-    'Useful agent commands: `projects --json`, `profile show <name> --json`, `profile init --detect --json`, `explain <job-id> --json`, repeatable `submit --metadata key=value`, `--label`, and `cleanup --caches`.',
+    "Useful agent commands: `projects --json`, `profile show <name> --json`, `profile init --detect --json`, `explain <job-id> --json`, repeatable `submit --metadata key=value`, `--label`, repeatable `submit --env KEY=VALUE`, and `cleanup --caches`. Env overrides apply to that job's `xcodebuild` invocation only, and XCSteward records override keys, not sensitive values.",
+  );
+  out.push('');
+  out.push(
+    '`runner_bootstrap_failure` means runner or environment setup failed before XCTest attached. XCSteward classifies pre-XCTest CoreSimulator, destination, launch session, artifact, or runner setup failures separately from real test failures, preserves the underlying detail, and may suggest a bounded next action such as shutting down or erasing the selected simulator before retrying once.',
+  );
+  out.push('');
+  out.push(
+    '`pre_xctest_timeout` means the test command hit its timeout before XCSteward observed XCTest attach/test execution evidence. The summary says `XCTest did not attach before the test command timed out`, and terminal JSON may include phase, timeout seconds, evidence paths, and a capped diagnostic excerpt.',
+  );
+  out.push('');
+  out.push(
+    'Failure inspection path:',
+  );
+  out.push('');
+  out.push('```bash');
+  out.push(FAILURE_INSPECTION_EXAMPLE);
+  out.push('```');
+  out.push('');
+  out.push(
+    'If a job is queued or still in simulator/bootstrap setup and `logs/combined.log` does not exist yet, `logs <job-id>` reports that the combined log is pending and points back to `status <job-id> --watch`.',
+  );
+  out.push('');
+  out.push(
+    'Doctor preflight stays bounded: if `.xctestrun` integrity checking times out during a cold or long build, the warning now says no compiler error was observed before timeout rather than implying an unlimited wait.',
   );
   out.push('');
   out.push(

@@ -36,6 +36,9 @@ failures are hard to reproduce by hand.
 - Multiple agents (or an agent plus your manual run) touch simulators at once.
 - The agent scrapes long, ambiguous output and cannot tell "still booting" from
   "stuck".
+- If the runner fails before XCTest attaches, the agent treats it like a generic
+  failed test because raw `xcodebuild` output does not give it a stable
+  classification.
 - Failures spike when the Mac is busy and vanish when it is idle.
 
 ## Why it happens / likely failure classes
@@ -108,9 +111,19 @@ This is one of the situations XCSteward is most directly designed for:
   `profile show <name> --json`, and `profile init --detect --json`.
 - **Streaming machine progress** with `--progress` on long JSON waits, and
   `status <job-id> --watch --json` when the agent wants newline-delimited full
-  `JobSummary` updates.
+  `JobSummary` updates. When command events are available, progress events add
+  `phase` and `phase_elapsed_seconds`.
 - **Bounded diagnosis** through `explain <job-id> --json`, plus metadata and
-  labels from `submit --metadata key=value` and `--label`.
+  labels from `submit --metadata key=value` and `--label`. Use repeatable
+  `submit --env KEY=VALUE` when the agent needs per-run `xcodebuild`
+  environment injection; XCSteward records override keys, not sensitive values.
+- **Pre-XCTest bootstrap classification** with `runner_bootstrap_failure`, which
+  means runner or environment setup failed before XCTest attached. Agents can
+  inspect `explain <job-id> --json` and retry environment failures carefully
+  instead of blind-retrying real test failures.
+- **Timeout-before-attach detail** with `diagnostic_excerpt.subtype =
+  pre_xctest_timeout`, meaning the test command hit its timeout before
+  XCSteward observed XCTest attach/test execution evidence.
 - **Readiness checks, bounded timeouts, and deterministic recovery** so a wedged
   run fails fast and the next attempt starts clean.
 - **Isolated artifacts** per run so concurrent attempts do not corrupt each

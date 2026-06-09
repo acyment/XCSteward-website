@@ -94,8 +94,12 @@ export const HELPS: { title: string; body: string }[] = [
     body: 'Plain waits print the job id, job directory, watch/follow commands, and compact progress instead of disappearing into a silent command.',
   },
   {
+    title: 'Explicit bootstrap diagnosis',
+    body: 'Pre-XCTest runner or environment setup failures are classified separately from real test failures, with the simulator detail and artifacts preserved.',
+  },
+  {
     title: 'A JSON contract for automation',
-    body: 'Agents and scripts can use JSON summaries, progress events, profile discovery, metadata, and bounded explanations instead of scraping human text.',
+    body: 'Agents and scripts can use JSON summaries, phase-aware progress events, profile discovery, metadata, per-run env injection, and bounded explanations instead of scraping human text.',
   },
 ];
 
@@ -105,8 +109,12 @@ xcsteward status <job-id> --watch
 xcsteward logs <job-id> --follow`;
 
 export const AGENT_CLI_EXAMPLE = `xcsteward profile init --detect --json
-xcsteward submit --project app --wait --wait-timeout 900 --json --progress
+xcsteward submit --project app --wait --wait-timeout 900 --json --progress --env API_BASE_URL=http://127.0.0.1:8080
 xcsteward explain <job-id> --json`;
+
+export const FAILURE_INSPECTION_EXAMPLE = `xcsteward status <job-id> --watch
+xcsteward explain <job-id> --json
+xcsteward logs <job-id>`;
 
 /** The feedback that is most valuable for the alpha. */
 export const VALUABLE_FEEDBACK: string[] = [

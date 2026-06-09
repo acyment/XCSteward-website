@@ -14,6 +14,7 @@ import {
   HELPS,
   HUMAN_CLI_EXAMPLE,
   AGENT_CLI_EXAMPLE,
+  FAILURE_INSPECTION_EXAMPLE,
 } from '../lib/site-content';
 
 const allFailures = await getCollection('failures', ({ data }) => !data.draft);
@@ -169,9 +170,10 @@ const softwareLd = {
     <p>
       Plain <code>submit --wait</code> is no longer a silent black box. It prints
       the queued job id, status/log/watch/follow commands, job directory, and
-      compact wait updates. From another terminal, <code>status --watch</code>
-      polls until the job is terminal and <code>logs --follow</code> streams the
-      combined log until completion.
+      compact wait updates. From another terminal,
+      <code>status &lt;job-id&gt; --watch [--interval &lt;seconds&gt;]</code>
+      polls until the job is terminal and <code>logs --follow</code> streams
+      the combined log until completion.
     </p>
     <pre><code>{HUMAN_CLI_EXAMPLE}</code></pre>
 
@@ -179,7 +181,9 @@ const softwareLd = {
     <p>
       Machine users should keep using <code>--json</code>. Long-running JSON
       waits can add <code>--progress</code> for JSON-lines events on stderr while
-      stdout stays reserved for the final JSON document. For streaming status,
+      stdout stays reserved for the final JSON document. When command events are
+      available, those progress events add <code>phase</code> and
+      <code>phase_elapsed_seconds</code>. For streaming status,
       <code>status &lt;job-id&gt; --watch --json</code> emits newline-delimited
       full <code>JobSummary</code> objects.
     </p>
@@ -199,11 +203,62 @@ const softwareLd = {
         <code>submit --metadata key=value</code> and <code>--label</code>.
       </li>
       <li>
+        Inject per-run environment for <code>xcodebuild</code> with repeatable
+        <code>submit --env KEY=VALUE</code>; CLI overrides beat profile
+        <code>[env]</code> for that job only, and XCSteward records override
+        keys rather than sensitive values.
+      </li>
+      <li>
         Prefer <code>explain &lt;job-id&gt; --json</code> for bounded triage
         before opening raw logs; use <code>cleanup --caches</code> for
         XCSteward-owned cache and retained evidence cleanup.
       </li>
+      <li>
+        Keep <code>doctor</code> as bounded preflight: if
+        <code>.xctestrun</code> integrity checking times out during a cold or
+        long build, the warning now says no compiler error was observed before
+        timeout rather than pretending it diagnosed the build.
+      </li>
     </ul>
+
+    <h3>When setup fails before XCTest attaches</h3>
+    <p>
+      If CoreSimulator fails before XCTest attaches, XCSteward reports an
+      environment failure with the simulator error and artifacts, rather than
+      making you decide from a silent terminal or raw <code>xcodebuild</code>
+      output whether the app regressed. The result class
+      <code>runner_bootstrap_failure</code> means runner or environment setup
+      failed before XCTest attached; it can come from simulator boot, destination,
+      launch session, artifact, or runner setup issues.
+    </p>
+    <p>
+      Signatures such as <code>Unable to boot the Simulator</code>,
+      <code>launchd failed to respond</code>,
+      <code>Failed to start launchd_sim</code>,
+      <code>NSPOSIXErrorDomain code=60</code>,
+      <code>Failed to prepare device</code>, or testmanagerd connection loss are
+      classified separately from real test failures. <code>submit --wait</code>,
+      <code>status</code>, and <code>explain --json</code> preserve the underlying
+      detail and may suggest a bounded next step, such as shutting down or
+      erasing the selected simulator before retrying once.
+    </p>
+    <p>
+      If the test command times out before XCSteward observes XCTest attach or
+      test-execution evidence, it still stays
+      <code>runner_bootstrap_failure</code> with
+      <code>diagnostic_excerpt.subtype = pre_xctest_timeout</code>. Plainly:
+      the test command hit its timeout before XCSteward observed XCTest attach
+      evidence. The final summary says <code>XCTest did not attach before the
+      test command timed out</code>, and terminal JSON can include the phase,
+      timeout seconds, evidence paths, and a capped diagnostic excerpt.
+    </p>
+    <pre><code>{FAILURE_INSPECTION_EXAMPLE}</code></pre>
+    <p>
+      When a job is still queued or in simulator/bootstrap setup and the combined
+      log is not ready, <code>logs &lt;job-id&gt;</code> points back to
+      <code>status &lt;job-id&gt; --watch</code> instead of turning a pending log
+      into an opaque missing-file error.
+    </p>
   </section>
 
   <!-- 7. FAILURE-MODE LIBRARY -->

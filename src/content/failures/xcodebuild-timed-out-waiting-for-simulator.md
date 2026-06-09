@@ -32,6 +32,11 @@ and the deadline passed before that happened.
 - Errors mentioning a timeout: `Timed out waiting for ... to boot`, `Timed out
   waiting for the simulator to be ready`, or a test-runner launch that times out.
 - The device may be left in `Booting` and never reaches `Booted`.
+- The build can complete, but the runner still never starts or attaches before
+  the environment deadline.
+- In XCSteward terms, if the timeout hits before it observes XCTest attach/test
+  execution evidence, the result stays `runner_bootstrap_failure` with
+  `diagnostic_excerpt.subtype = pre_xctest_timeout`, not plain `test_timeout`.
 - It is intermittent — slower on the first run after a reboot, Xcode update, or
   runtime install, and more likely when the machine is busy.
 - Bumping a launch/boot timeout sometimes "fixes" it, which is a sign the device
@@ -103,6 +108,17 @@ Bounding and verifying the boot/readiness window is a core design goal:
 - Compact **wait/watch output** for humans, plus `--json`, `--progress`,
   `status <job-id> --watch --json`, and `explain <job-id> --json` for agents
   that need a stable outcome and evidence path.
+- **Pre-XCTest bootstrap diagnosis**: when the runner or environment setup fails
+  before XCTest attaches, XCSteward reports `runner_bootstrap_failure` instead
+  of making a timeout look like a normal test failure.
+- **Clear timeout-before-attach detail**: `pre_xctest_timeout` means the test
+  command hit its timeout before XCSteward observed XCTest attach/test
+  execution evidence. The summary says `XCTest did not attach before the test
+  command timed out`, and terminal JSON may include phase, timeout seconds,
+  evidence paths, and a capped diagnostic excerpt.
+- **Bounded doctor preflight**: the `.xctestrun` integrity timeout warning now
+  says when no compiler error was observed before timeout, which is useful
+  diagnosis for cold or long builds, not a promise to keep waiting indefinitely.
 
 Worth testing against this class of failure, especially if timeouts cluster
 under load or after cold starts.

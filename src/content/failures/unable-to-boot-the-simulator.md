@@ -35,6 +35,8 @@ enters `Booting` and stays there indefinitely without ever reaching `Booted`.
 - A device wedged at `Booting` in `xcrun simctl list devices`.
 - `An error was encountered processing the command (domain=...
   NSPOSIXErrorDomain...)` from `simctl boot`.
+- `launchd failed to respond`, `Failed to start launchd_sim`, or similar
+  pre-test runner/bootstrap errors before XCTest attaches.
 - A reboot temporarily fixes it; it comes back under load or after many runs.
 
 ## Why it happens / likely failure classes
@@ -53,6 +55,11 @@ The boot transition could not complete:
   causing the boot to fail.
 - **Concurrent boots of the same device** from different callers racing each
   other.
+
+When this happens before XCTest attaches, XCSteward classifies the job as
+`runner_bootstrap_failure`, meaning runner or environment setup failed before
+XCTest attached. That classification is separate from `test_failure`, because no
+test execution really started.
 
 ## Quick checks
 
@@ -121,6 +128,13 @@ targets:
 - **Watch/follow commands** so a long boot or cleanup phase can stay visible to
   a human, while agents keep using `--json`, `--progress`, and
   `explain <job-id> --json`.
+- **Bootstrap failure classification** that preserves errors such as
+  `Unable to boot the Simulator`, `NSPOSIXErrorDomain code=60`, or
+  `Failed to start launchd_sim` with artifacts and a bounded remediation hint,
+  such as shutting down or erasing the selected simulator before retrying once.
+- **Pending-log handling** so `logs <job-id>` can say the combined log is still
+  pending during queued/bootstrap setup instead of turning that state into an
+  opaque missing-file error.
 
 A strong candidate to test against this class of failure.
 

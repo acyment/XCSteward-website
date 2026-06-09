@@ -38,6 +38,9 @@ and failures stop being reproducible.
   [CoreSimulatorService deadlock](/failures/coresimulatorservice-deadlock/).
 - Result bundles, logs, or `DerivedData` from different runs overwrite each
   other.
+- A run builds successfully but fails before XCTest attaches, and the agent
+  cannot tell from raw output whether it is an app regression or simulator /
+  runner setup trouble.
 - Failures correlate with **how busy the Mac is**, not with any one test — the
   hallmark of a contention problem rather than a code problem.
 
@@ -129,7 +132,20 @@ This is the central use case XCSteward is designed for:
 - **A JSON contract for agents**, including `projects --json`,
   `profile show <name> --json`, `profile init --detect --json`,
   `status <job-id> --watch --json` as newline-delimited `JobSummary` objects,
-  `explain <job-id> --json`, `--progress`, `--metadata`, and `--label`.
+  `explain <job-id> --json`, phase-aware `--progress`, `--metadata`,
+  `--label`, and repeatable `--env KEY=VALUE` for per-run environment
+  injection. XCSteward records env override keys, not sensitive values.
+- **Explicit pre-XCTest classification**: `runner_bootstrap_failure` means
+  runner or environment setup failed before XCTest attached, so agents can
+  distinguish CoreSimulator, destination, launch-session, artifact, or runner
+  setup trouble from real test failures and branch on `result_class`.
+- **Timeout-before-attach detail**: `pre_xctest_timeout` means the test command
+  hit its timeout before XCSteward observed XCTest attach/test execution
+  evidence, so agents do not mistake a bootstrap problem for a timed-out test
+  case.
+- **Pending-log handling** so `logs <job-id>` can report that the combined log is
+  not ready yet during queued/bootstrap setup and point back to
+  `status <job-id> --watch`.
 
 If your pain shows up specifically when agents share a Mac, this is the class of
 failure XCSteward most wants to be tested against.

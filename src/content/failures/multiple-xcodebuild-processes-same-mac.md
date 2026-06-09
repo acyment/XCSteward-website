@@ -34,6 +34,8 @@ corrupt each other's output.
 - One run boots or erases a device out from under another.
 - `simctl`/CoreSimulator wedges right when several runs overlap. See
   [CoreSimulatorService deadlock](/failures/coresimulatorservice-deadlock/).
+- A run fails before XCTest attaches with simulator/bootstrap output, even
+  though the build itself completed.
 - Failures correlate with how many runs are active, not with any one test.
 
 ## Why it happens / likely failure classes
@@ -102,11 +104,15 @@ Coordinating concurrent work on one Mac is a core design goal:
   not corrupt each other.
 - **Legible wait and monitoring commands** for humans: `submit --wait` prints
   the job id, status/log/watch/follow commands, job directory, and compact
-  updates; `status <job-id> --watch` polls until terminal; `logs --follow`
-  streams the combined log.
+  updates; `status <job-id> --watch [--interval <seconds>]` polls until
+  terminal; `logs --follow` streams the combined log.
 - **Structured summaries for scripts and agents** through `--json`,
-  `--progress`, `status <job-id> --watch --json`, `explain <job-id> --json`,
-  metadata, and labels.
+  phase-aware `--progress`, `status <job-id> --watch --json`,
+  `explain <job-id> --json`, metadata, labels, and repeatable
+  `submit --env KEY=VALUE` for per-run environment injection.
+- **Separate bootstrap diagnosis** for pre-XCTest failures: if setup fails
+  before the runner attaches, XCSteward reports `runner_bootstrap_failure`
+  rather than treating it as a real test execution failure.
 
 A strong candidate to test against this class of failure.
 
